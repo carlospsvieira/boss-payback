@@ -1,7 +1,7 @@
 package api
 
 import (
-	"render2/internal/api/handlers"
+	"boss-payback/internal/api/handlers"
 
 	"github.com/gofiber/fiber/v2"
 )

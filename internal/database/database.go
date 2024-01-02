@@ -1,10 +1,10 @@
 package database
 
 import (
+	"boss-payback/internal/database/models"
 	"fmt"
 	"log"
 	"os"
-	"render2/internal/database/models"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"

@@ -1,9 +1,9 @@
 package main
 
 import (
+	"boss-payback/internal/api"
+	"boss-payback/internal/database"
 	"log"
-	"render2/internal/api"
-	"render2/internal/database"
 
 	"github.com/gofiber/fiber/v2"
 )
