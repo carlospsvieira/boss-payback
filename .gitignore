@@ -1,0 +1,49 @@
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+*.dll
+
+# Binary and Executables
+*.exe
+*.exe~
+*.out
+*.app
+
+# Dependency directories (Commonly used tools such as dep, glide, godep, govendor, gb, etc.)
+/vendor/
+
+# Go specific
+*.test
+*.prof
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Compiled Go files
+*.test
+*.prof
+*.exe
+
+# Compiled main generated files
+main
+
+# Generate by Air
+air
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Ignore Fiber cache
+.fiber/
+
+# Ignore any local config or environment files you may use
+.env
+.env.local
+
+# Logs
+*.log
+
+# Compiled files from Air (if any)
+bin/
