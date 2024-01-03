@@ -6,9 +6,9 @@ import (
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"unique;not null"`
-	Password string `gorm:"not null"`
-	Email    string `gorm:"unique;not null"`
-	RoleID   uint   // Foreign key for Role model
+	Username string `json:"username" gorm:"unique;not null"`
+	Password string `json:"password" gorm:"not null"`
+	Email    string `json:"email" gorm:"unique;not null"`
+	RoleID   uint   `json:"roleid"` // Foreign key for Role model
 	Role     Role   // Belongs to Role
 }
