@@ -6,8 +6,8 @@ import (
 
 type ApprovalWorkflow struct {
 	gorm.Model
-	ExpenseID  uint   // Foreign key for Expense model
-	ApproverID uint   // Foreign key for User model who approves
-	Status     string `gorm:"default:'pending'"` // e.g., pending, approved, rejected
-	Comments   string // Optional comments from the approver
+	ExpenseID  uint   `json:"expenseId"`                       // Foreign key for Expense model
+	ApproverID uint   `json:"approverId"`                      // Foreign key for User model who approves
+	Status     string `json:"status" gorm:"default:'pending'"` // e.g., pending, approved, rejected
+	Comments   string `json:"comments"`                        // Optional comments from the approver
 }
