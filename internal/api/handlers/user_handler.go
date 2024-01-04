@@ -20,7 +20,6 @@ func Register(c *fiber.Ctx) error {
 	user := new(models.User)
 	if err := c.BodyParser(user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"data":    "",
 			"message": err.Error(),
 		})
 	}
@@ -46,7 +45,6 @@ func Register(c *fiber.Ctx) error {
 func Login(c *fiber.Ctx) error {
 	if err := c.BodyParser(&body); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"data":    "",
 			"message": err.Error(),
 		})
 	}
@@ -79,7 +77,7 @@ func UpdateUsername(c *fiber.Ctx) error {
 	user, err := utils.FindUser(body.Username, body.Password)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": err.Error(),
+			"message": "Invalid credentials",
 		})
 	}
 
@@ -95,7 +93,6 @@ func UpdateUsername(c *fiber.Ctx) error {
 func UpdatePassword(c *fiber.Ctx) error {
 	if err := c.BodyParser(&body); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"data":    "",
 			"message": err.Error(),
 		})
 	}
@@ -103,7 +100,6 @@ func UpdatePassword(c *fiber.Ctx) error {
 	user, err := utils.FindUser(body.Username, body.Password)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"data":    "",
 			"message": "Invalid credentials",
 		})
 	}
@@ -134,15 +130,13 @@ func DeleteUser(c *fiber.Ctx) error {
 	user, err := utils.FindUser(body.Username, body.Password)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"data":    "",
 			"message": "Invalid credentials",
 		})
 	}
 
 	if err := database.DB.Db.Unscoped().Delete(&user).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"data":    "",
-			"message": "Failed to delete user",
+			"message": err.Error(),
 		})
 	}
 
