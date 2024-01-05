@@ -49,10 +49,15 @@ func Login(c *fiber.Ctx) error {
 		return helpers.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
+	if err := database.DB.Db.Model(&user).Where("username = ?", user.Username).Update("logged_in", true).Error; err != nil {
+		return helpers.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"data": fiber.Map{
 			"username": user.Username,
 			"roleId":   user.RoleID,
+			"loggedIn": true,
 		},
 		"message": fmt.Sprintf("%s logged in successfully!", user.Username),
 	})

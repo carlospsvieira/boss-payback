@@ -18,4 +18,7 @@ func Routes(app *fiber.App) {
 	// Related to Role
 	app.Post("/new-role", handlers.CreateRole)
 	app.Delete("/delete-role", handlers.DeleteRole)
+
+	// Related to Expense
+	app.Post("/new-expense", handlers.CreateExpense)
 }
