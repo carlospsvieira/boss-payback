@@ -10,5 +10,4 @@ type User struct {
 	Password string `json:"password" gorm:"not null"`
 	Email    string `json:"email" gorm:"unique;not null"`
 	RoleID   uint   `json:"roleid"` // Foreign key for Role model
-	Role     Role   `json:"role"`   // Belongs to Role
 }
