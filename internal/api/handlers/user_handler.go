@@ -3,7 +3,7 @@ package handlers
 import (
 	"boss-payback/internal/database"
 	"boss-payback/internal/database/models"
-	"boss-payback/pkg/utils"
+	"boss-payback/pkg/helpers"
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,15 +12,13 @@ import (
 func Register(c *fiber.Ctx) error {
 	var user models.User
 
-	if err := c.BodyParser(&user); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+	if err := helpers.ParseRequestBody(c, &user); err != nil {
+		return err
 	}
 
-	hashedPassword, err := utils.HashPassword(user.Password)
+	hashedPassword, err := helpers.HashPassword(user.Password)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Failed to hash password")
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, "Failed to hash password")
 	}
 
 	user.Password = string(hashedPassword)
@@ -42,17 +40,13 @@ func Login(c *fiber.Ctx) error {
 		Password string `json:"password"`
 	}
 
-	if err := c.BodyParser(&userRequest); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+	if err := helpers.ParseRequestBody(c, &userRequest); err != nil {
+		return err
 	}
 
-	user, err := utils.FindUser(userRequest.Username, userRequest.Password)
+	user, err := helpers.FindUser(userRequest.Username, userRequest.Password)
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Invalid credentials",
-		})
+		return helpers.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -71,17 +65,13 @@ func UpdateUsername(c *fiber.Ctx) error {
 		NewUsername string `json:"newUsername"`
 	}
 
-	if err := c.BodyParser(&userRequest); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+	if err := helpers.ParseRequestBody(c, &userRequest); err != nil {
+		return err
 	}
 
-	user, err := utils.FindUser(userRequest.Username, userRequest.Password)
+	user, err := helpers.FindUser(userRequest.Username, userRequest.Password)
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Invalid credentials",
-		})
+		return helpers.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
 	if err := database.DB.Db.Model(&user).Where("username = ?", user.Username).Update("username", userRequest.NewUsername).Error; err != nil {
@@ -100,28 +90,22 @@ func UpdatePassword(c *fiber.Ctx) error {
 		NewPassword string `json:"newPassword"`
 	}
 
-	if err := c.BodyParser(&userRequest); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+	if err := helpers.ParseRequestBody(c, &userRequest); err != nil {
+		return err
 	}
 
-	user, err := utils.FindUser(userRequest.Username, userRequest.Password)
+	user, err := helpers.FindUser(userRequest.Username, userRequest.Password)
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Invalid credentials",
-		})
+		return helpers.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	hashedPassword, err := utils.HashPassword(userRequest.NewPassword)
+	hashedPassword, err := helpers.HashPassword(userRequest.NewPassword)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Failed to hash password")
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, "Failed to hash password")
 	}
 
 	if err := database.DB.Db.Model(&user).Where("username = ?", user.Username).Update("password", hashedPassword).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return c.Status(fiber.StatusNoContent).JSON("")
@@ -138,18 +122,13 @@ func GetUsersByRole(c *fiber.Ctx) error {
 		RoleId   uint   `json:"roleId"`
 	}
 
-	if err := c.BodyParser(&userRequest); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+	if err := helpers.ParseRequestBody(c, &userRequest); err != nil {
+		return err
 	}
 
 	var users []models.User
 	if err := database.DB.Db.Where("role_id = ?", userRequest.RoleId).Find(&users).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to fetch users",
-			"error":   err.Error(),
-		})
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	var response []userResponse
@@ -175,23 +154,17 @@ func DeleteUser(c *fiber.Ctx) error {
 		Password string `json:"password"`
 	}
 
-	if err := c.BodyParser(&userRequest); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+	if err := helpers.ParseRequestBody(c, &userRequest); err != nil {
+		return err
 	}
 
-	user, err := utils.FindUser(userRequest.Username, userRequest.Password)
+	user, err := helpers.FindUser(userRequest.Username, userRequest.Password)
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Invalid credentials",
-		})
+		return helpers.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
 	if err := database.DB.Db.Unscoped().Delete(&user).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{

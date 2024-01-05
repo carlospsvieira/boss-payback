@@ -3,7 +3,7 @@ package handlers
 import (
 	"boss-payback/internal/database"
 	"boss-payback/internal/database/models"
-	"boss-payback/pkg/utils"
+	"boss-payback/pkg/helpers"
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,10 +12,8 @@ import (
 var role models.Role
 
 func CreateRole(c *fiber.Ctx) error {
-	if err := c.BodyParser(&role); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+	if err := helpers.ParseRequestBody(c, &role); err != nil {
+		return err
 	}
 
 	database.DB.Db.Create(&role)
@@ -30,23 +28,17 @@ func CreateRole(c *fiber.Ctx) error {
 }
 
 func DeleteRole(c *fiber.Ctx) error {
-	if err := c.BodyParser(&role); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+	if err := helpers.ParseRequestBody(c, &role); err != nil {
+		return err
 	}
 
-	role, err := utils.FindRole(role.Name)
+	role, err := helpers.FindRole(role.Name)
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	if err := database.DB.Db.Unscoped().Delete(&role).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
