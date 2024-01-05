@@ -131,13 +131,23 @@ func GetUsersByRole(c *fiber.Ctx) error {
 		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	var response []userResponse
+	userCh := make(chan userResponse)
+	defer close(userCh)
+
 	for _, user := range users {
-		response = append(response, userResponse{
-			Username: user.Username,
-			Email:    user.Email,
-			RoleId:   user.RoleID,
-		})
+		go func(u models.User) {
+			userCh <- userResponse{
+				Username: u.Username,
+				Email:    u.Email,
+				RoleId:   u.RoleID,
+			}
+		}(user)
+	}
+
+	var response []userResponse
+	for range users {
+		user := <-userCh
+		response = append(response, user)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
