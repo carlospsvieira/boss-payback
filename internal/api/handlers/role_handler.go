@@ -9,9 +9,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-var role models.Role
-
 func CreateRole(c *fiber.Ctx) error {
+	var role models.Role
 	if err := helpers.ParseRequestBody(c, &role); err != nil {
 		return err
 	}
@@ -27,12 +26,82 @@ func CreateRole(c *fiber.Ctx) error {
 	})
 }
 
+func GetRoles(c *fiber.Ctx) error {
+	var roles []models.Role
+
+	if err := database.DB.Db.Find(&roles).Error; err != nil {
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"data":    roles,
+		"message": "Successfully fetched all roles",
+	})
+}
+
+func UpdateRoleName(c *fiber.Ctx) error {
+	var roleRequest struct {
+		ID   uint   `json:"id"`
+		Name string `json:"name"`
+	}
+
+	if err := helpers.ParseRequestBody(c, &roleRequest); err != nil {
+		return err
+	}
+
+	role, err := helpers.FindRole(roleRequest.ID)
+	if err != nil {
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	if err := database.DB.Db.Model(&role).Where("id = ?", role.ID).Update("name", roleRequest.Name).Error; err != nil {
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"data": fiber.Map{
+			"name":        roleRequest.Name,
+			"description": role.Description,
+		},
+		"message": fmt.Sprintf("Role with id %d was updated", role.ID),
+	})
+}
+
+func UpdateRoleDescription(c *fiber.Ctx) error {
+	var roleRequest struct {
+		ID          uint   `json:"id"`
+		Description string `json:"description"`
+	}
+
+	if err := helpers.ParseRequestBody(c, &roleRequest); err != nil {
+		return err
+	}
+
+	role, err := helpers.FindRole(roleRequest.ID)
+	if err != nil {
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	if err := database.DB.Db.Model(&role).Where("id = ?", role.ID).Update("description", roleRequest.Description).Error; err != nil {
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"data": fiber.Map{
+			"name":        role.Name,
+			"description": roleRequest.Description,
+		},
+		"message": fmt.Sprintf("Role with id %d was updated", role.ID),
+	})
+}
+
 func DeleteRole(c *fiber.Ctx) error {
+	var role models.Role
 	if err := helpers.ParseRequestBody(c, &role); err != nil {
 		return err
 	}
 
-	role, err := helpers.FindRole(role.Name)
+	role, err := helpers.FindRole(role.ID)
 	if err != nil {
 		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
