@@ -49,7 +49,7 @@ func Login(c *fiber.Ctx) error {
 		return helpers.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	if err := database.DB.Db.Model(&user).Where("username = ?", user.Username).Update("logged_in", true).Error; err != nil {
+	if err := database.DB.Db.Model(&user).Where("id = ?", user.ID).Update("logged_in", true).Error; err != nil {
 		return helpers.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
 	}
 
@@ -79,13 +79,13 @@ func UpdateUsername(c *fiber.Ctx) error {
 		return helpers.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	if err := database.DB.Db.Model(&user).Where("username = ?", user.Username).Update("username", userRequest.NewUsername).Error; err != nil {
+	if err := database.DB.Db.Model(&user).Where("id = ?", user.ID).Update("username", userRequest.NewUsername).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	return c.Status(fiber.StatusNoContent).JSON("")
+	return c.Status(fiber.StatusOK).JSON("")
 }
 
 func UpdatePassword(c *fiber.Ctx) error {
@@ -109,11 +109,11 @@ func UpdatePassword(c *fiber.Ctx) error {
 		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, "Failed to hash password")
 	}
 
-	if err := database.DB.Db.Model(&user).Where("username = ?", user.Username).Update("password", hashedPassword).Error; err != nil {
+	if err := database.DB.Db.Model(&user).Where("id = ?", user.ID).Update("password", hashedPassword).Error; err != nil {
 		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return c.Status(fiber.StatusNoContent).JSON("")
+	return c.Status(fiber.StatusNoContent).SendString("Password updated!")
 }
 
 func GetUsersByRole(c *fiber.Ctx) error {

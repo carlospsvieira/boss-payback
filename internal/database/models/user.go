@@ -9,7 +9,8 @@ type User struct {
 	Username string `json:"username" gorm:"unique;not null"`
 	Password string `json:"password" gorm:"not null"`
 	Email    string `json:"email" gorm:"unique;not null"`
-	RoleID   uint   `json:"roleid"` // Foreign key for Role model
+	RoleID   uint   `json:"roleid"`
 	Role     Role
+	Expenses []Expense
 	LoggedIn bool `json:"loggedIn" gorm:"default:false"`
 }
