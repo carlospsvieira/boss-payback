@@ -13,6 +13,7 @@ func Routes(app *fiber.App) {
 	app.Post("/login", handlers.Login)
 	app.Put("/username", handlers.UpdateUsername)
 	app.Put("/password", handlers.UpdatePassword)
+	app.Put("/user-role", handlers.UpdateUserRole)
 	app.Delete("/delete-user", handlers.DeleteUser)
 
 	// Related to Role

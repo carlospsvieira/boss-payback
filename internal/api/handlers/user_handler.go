@@ -16,6 +16,10 @@ func Register(c *fiber.Ctx) error {
 		return err
 	}
 
+	if user.Username == "" && user.Email == "" {
+		return helpers.HandleErrorResponse(c, fiber.StatusBadRequest, "Fields empty or missing")
+	}
+
 	if !helpers.ValidatePassword(user.Password) {
 		return helpers.HandleErrorResponse(c, fiber.StatusBadRequest, "Invalid password")
 	}
@@ -126,6 +130,29 @@ func UpdatePassword(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).SendString("Password updated!")
+}
+
+func UpdateUserRole(c *fiber.Ctx) error {
+	var userRequest struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+		RoleId   uint   `json:"roleId"`
+	}
+
+	if err := helpers.ParseRequestBody(c, &userRequest); err != nil {
+		return err
+	}
+
+	user, err := helpers.FindUser(userRequest.Username, userRequest.Password)
+	if err != nil {
+		return helpers.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
+	}
+
+	if err := database.DB.Db.Model(&user).Where("id = ?", user.ID).Update("role_id", userRequest.RoleId).Error; err != nil {
+		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	return c.Status(fiber.StatusOK).SendString("User's role updated!")
 }
 
 func GetUsersByRole(c *fiber.Ctx) error {
