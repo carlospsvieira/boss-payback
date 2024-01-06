@@ -49,6 +49,10 @@ func UpdateRoleName(c *fiber.Ctx) error {
 		return err
 	}
 
+	if roleRequest.Name == "" {
+		return helpers.HandleErrorResponse(c, fiber.StatusBadRequest, "Role name cannot be empty")
+	}
+
 	role, err := helpers.FindRole(roleRequest.ID)
 	if err != nil {
 		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
