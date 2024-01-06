@@ -93,7 +93,7 @@ func UpdateUsername(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Status(fiber.StatusOK).JSON("")
+	return c.Status(fiber.StatusOK).JSON("Username updated!")
 }
 
 func UpdatePassword(c *fiber.Ctx) error {
@@ -125,7 +125,7 @@ func UpdatePassword(c *fiber.Ctx) error {
 		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return c.Status(fiber.StatusNoContent).SendString("Password updated!")
+	return c.Status(fiber.StatusOK).SendString("Password updated!")
 }
 
 func GetUsersByRole(c *fiber.Ctx) error {
