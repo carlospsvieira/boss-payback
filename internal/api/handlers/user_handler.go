@@ -16,6 +16,10 @@ func Register(c *fiber.Ctx) error {
 		return err
 	}
 
+	if !helpers.ValidatePassword(user.Password) {
+		return helpers.HandleErrorResponse(c, fiber.StatusBadRequest, "Invalid password")
+	}
+
 	hashedPassword, err := helpers.HashPassword(user.Password)
 	if err != nil {
 		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, "Failed to hash password")
@@ -74,6 +78,10 @@ func UpdateUsername(c *fiber.Ctx) error {
 		return err
 	}
 
+	if userRequest.NewUsername == "" {
+		return helpers.HandleErrorResponse(c, fiber.StatusBadRequest, "New username cannot be empty")
+	}
+
 	user, err := helpers.FindUser(userRequest.Username, userRequest.Password)
 	if err != nil {
 		return helpers.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
@@ -102,6 +110,10 @@ func UpdatePassword(c *fiber.Ctx) error {
 	user, err := helpers.FindUser(userRequest.Username, userRequest.Password)
 	if err != nil {
 		return helpers.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
+	}
+
+	if !helpers.ValidatePassword(userRequest.Password) {
+		return helpers.HandleErrorResponse(c, fiber.StatusBadRequest, "New password does not meet criteria")
 	}
 
 	hashedPassword, err := helpers.HashPassword(userRequest.NewPassword)
