@@ -4,6 +4,7 @@ import (
 	"boss-payback/internal/database"
 	"boss-payback/internal/database/models"
 	"boss-payback/pkg/helpers"
+	"boss-payback/pkg/utils"
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
@@ -11,7 +12,7 @@ import (
 
 func CreateRole(c *fiber.Ctx) error {
 	var role models.Role
-	if err := helpers.ParseRequestBody(c, &role); err != nil {
+	if err := utils.ParseRequestBody(c, &role); err != nil {
 		return err
 	}
 
@@ -30,7 +31,7 @@ func GetRoles(c *fiber.Ctx) error {
 	var roles []models.Role
 
 	if err := database.DB.Db.Find(&roles).Error; err != nil {
-		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -45,21 +46,21 @@ func UpdateRoleName(c *fiber.Ctx) error {
 		Name string `json:"name"`
 	}
 
-	if err := helpers.ParseRequestBody(c, &roleRequest); err != nil {
+	if err := utils.ParseRequestBody(c, &roleRequest); err != nil {
 		return err
 	}
 
 	if roleRequest.Name == "" {
-		return helpers.HandleErrorResponse(c, fiber.StatusBadRequest, "Role name cannot be empty")
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, "Role name cannot be empty")
 	}
 
 	role, err := helpers.FindRole(roleRequest.ID)
 	if err != nil {
-		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	if err := database.DB.Db.Model(&role).Where("id = ?", role.ID).Update("name", roleRequest.Name).Error; err != nil {
-		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -77,17 +78,17 @@ func UpdateRoleDescription(c *fiber.Ctx) error {
 		Description string `json:"description"`
 	}
 
-	if err := helpers.ParseRequestBody(c, &roleRequest); err != nil {
+	if err := utils.ParseRequestBody(c, &roleRequest); err != nil {
 		return err
 	}
 
 	role, err := helpers.FindRole(roleRequest.ID)
 	if err != nil {
-		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	if err := database.DB.Db.Model(&role).Where("id = ?", role.ID).Update("description", roleRequest.Description).Error; err != nil {
-		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -101,17 +102,17 @@ func UpdateRoleDescription(c *fiber.Ctx) error {
 
 func DeleteRole(c *fiber.Ctx) error {
 	var role models.Role
-	if err := helpers.ParseRequestBody(c, &role); err != nil {
+	if err := utils.ParseRequestBody(c, &role); err != nil {
 		return err
 	}
 
 	role, err := helpers.FindRole(role.ID)
 	if err != nil {
-		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	if err := database.DB.Db.Unscoped().Delete(&role).Error; err != nil {
-		return helpers.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
