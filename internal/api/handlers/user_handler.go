@@ -36,6 +36,7 @@ func Register(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"data": fiber.Map{
 			"username": user.Username,
+			"email":    user.Email,
 			"roleId":   user.RoleID,
 		},
 		"message": fmt.Sprintf("%s was created!", user.Username),
