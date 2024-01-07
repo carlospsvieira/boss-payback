@@ -23,3 +23,27 @@ var UpdateUserRoleRequest struct {
 var GetUsersByRoleRequest struct {
 	RoleId uint `json:"roleId"`
 }
+
+var UpdateRoleNameRequest struct {
+	ID      uint   `json:"id"`
+	NewName string `json:"newName"`
+}
+
+var UpdateRoleDescriptionRequest struct {
+	ID             uint   `json:"id"`
+	NewDescription string `json:"newDescription"`
+}
+
+var UpdateExpenseAmountRequest struct {
+	ID     uint    `json:"id"`
+	Amount float64 `json:"amount"`
+}
+
+var UpdateExpenseDescriptionRequest struct {
+	ID          uint   `json:"id"`
+	Description string `json:"description"`
+}
+
+var DeleteExpenseRequest struct {
+	ID uint `json:"id"`
+}

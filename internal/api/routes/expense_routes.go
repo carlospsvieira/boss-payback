@@ -12,9 +12,9 @@ func ExpenseRoutes(app *fiber.App) {
 
 	expenseRoutes := app.Group("/expense", middlewares.ValidateToken)
 	{
-		expenseRoutes.Post("/new-expense", handlers.CreateExpense)
-		expenseRoutes.Put("/expense-amount", handlers.UpdateExpenseAmount)
-		expenseRoutes.Put("/expense-description", handlers.UpdateExpenseDescription)
-		expenseRoutes.Delete("/delete-expense", handlers.DeleteExpense)
+		expenseRoutes.Post("/new", handlers.CreateExpense)
+		expenseRoutes.Put("/amount", handlers.UpdateExpenseAmount)
+		expenseRoutes.Put("/description", handlers.UpdateExpenseDescription)
+		expenseRoutes.Delete("/delete", handlers.DeleteExpense)
 	}
 }

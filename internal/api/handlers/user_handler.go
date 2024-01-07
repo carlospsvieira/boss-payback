@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"boss-payback/internal/api/services"
 	"boss-payback/internal/database/models"
+	"boss-payback/internal/database/services"
 	"boss-payback/pkg/helpers"
 	"boss-payback/pkg/utils"
 
