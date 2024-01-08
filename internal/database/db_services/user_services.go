@@ -22,14 +22,6 @@ func CreateUserInDB(c *fiber.Ctx, user *models.User) error {
 	return nil
 }
 
-func LoginUserInDB(c *fiber.Ctx, user *models.User) error {
-	if err := database.DB.Db.Model(user).Where("id = ?", user.ID).Update("logged_in", true).Error; err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
-	}
-
-	return nil
-}
-
 func UpdateUsernameInDB(c *fiber.Ctx, user *models.User, updatedUsername string) error {
 	if err := database.DB.Db.Model(user).Where("id = ?", user.ID).Update("username", updatedUsername).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())

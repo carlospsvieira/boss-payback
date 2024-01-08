@@ -11,5 +11,4 @@ type User struct {
 	Email    string `json:"email" gorm:"unique;not null"`
 	RoleID   uint   `json:"roleId"`
 	Role     Role
-	LoggedIn bool `json:"loggedIn" gorm:"default:false"`
 }

@@ -51,10 +51,6 @@ func Login(c *fiber.Ctx) error {
 		return utils.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	if err := db_services.LoginUserInDB(c, &user); err != nil {
-		return err
-	}
-
 	return services.LoginUserResponse(c, &user)
 }
 
