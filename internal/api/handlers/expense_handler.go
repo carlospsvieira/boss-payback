@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"boss-payback/internal/database"
+	"boss-payback/internal/api/services"
 	"boss-payback/internal/database/db_services"
 	"boss-payback/internal/database/models"
 	"boss-payback/pkg/helpers"
@@ -12,51 +12,55 @@ import (
 
 func CreateExpense(c *fiber.Ctx) error {
 	var expense models.Expense
-	if err := utils.ParseRequestBody(c, &expense); err != nil {
-		return err
-	}
+	utils.ParseRequestBody(c, &expense)
 
-	return db_services.CreateExpenseInDB(c, &expense)
+	db_services.CreateExpenseInDB(c, &expense)
+
+	return services.CreateExpenseResponse(c, &expense)
 }
 
 func UpdateExpenseAmount(c *fiber.Ctx) error {
-	if err := utils.ParseRequestBody(c, &UpdateExpenseAmountRequest); err != nil {
-		return err
-	}
+	utils.ParseRequestBody(c, &UpdateExpenseAmountRequest)
 
-	return db_services.UpdateExpenseAmountInDB(c, UpdateExpenseAmountRequest.ID, UpdateExpenseAmountRequest.Amount)
+	db_services.UpdateExpenseAmountInDB(c, UpdateExpenseAmountRequest.ID, UpdateExpenseAmountRequest.Amount)
+
+	return services.UpdateExpenseAmountResponse(c, UpdateExpenseAmountRequest.Amount, UpdateExpenseAmountRequest.ID)
 }
 
 func UpdateExpenseDescription(c *fiber.Ctx) error {
-	if err := utils.ParseRequestBody(c, &UpdateExpenseDescriptionRequest); err != nil {
-		return err
-	}
+	utils.ParseRequestBody(c, &UpdateExpenseDescriptionRequest)
 
-	return db_services.UpdateExpenseDescriptionInDB(c, UpdateExpenseDescriptionRequest.ID, UpdateExpenseDescriptionRequest.Description)
+	db_services.UpdateExpenseDescriptionInDB(c, UpdateExpenseDescriptionRequest.ID, UpdateExpenseDescriptionRequest.Description)
+
+	return services.UpdateExpenseDescriptionResponse(c, UpdateExpenseDescriptionRequest.Description, UpdateExpenseDescriptionRequest.ID)
 }
 
 func GetExpenses(c *fiber.Ctx) error {
 	var expenses []models.Expense
 
-	if err := database.DB.Db.Find(&expenses).Error; err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
-	}
+	db_services.GetExpensesInDB(c, expenses)
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data":    expenses,
-		"message": "Successfully fetched all expenses",
-	})
+	return services.GetExpensesResponse(c, expenses)
+}
+
+func GetExpensesByUser(c *fiber.Ctx) error {
+	var expenses []models.Expense
+	utils.ParseRequestBody(c, &GetExpensesByUserRequest)
+
+	db_services.GetExpensesByUserInDB(c, expenses, GetExpensesByUserRequest.UserID)
+
+	return services.GetExpensesByUserResponse(c, expenses, GetExpensesByUserRequest.UserID)
 }
 
 func DeleteExpense(c *fiber.Ctx) error {
-	if err := utils.ParseRequestBody(c, &DeleteExpenseRequest); err != nil {
-		return err
-	}
+	utils.ParseRequestBody(c, &DeleteExpenseRequest)
 
 	expense, err := helpers.FindExpense(DeleteExpenseRequest.ID)
 	if err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return db_services.DeleteExpenseInDB(c, &expense)
+	db_services.DeleteExpenseInDB(c, &expense)
+
+	return services.DeleteExpenseResponse(c, &expense)
 }

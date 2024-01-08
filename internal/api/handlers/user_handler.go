@@ -13,9 +13,7 @@ import (
 func Register(c *fiber.Ctx) error {
 	var user models.User
 
-	if err := utils.ParseRequestBody(c, &user); err != nil {
-		return err
-	}
+	utils.ParseRequestBody(c, &user)
 
 	if user.Username == "" && user.Email == "" {
 		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, "Fields empty or missing")
@@ -32,9 +30,7 @@ func Register(c *fiber.Ctx) error {
 
 	user.Password = string(hashedPassword)
 
-	if err := db_services.CreateUserInDB(c, &user); err != nil {
-		return err
-	}
+	db_services.CreateUserInDB(c, &user)
 
 	return services.CreateUserResponse(c, &user)
 }
@@ -42,9 +38,7 @@ func Register(c *fiber.Ctx) error {
 func Login(c *fiber.Ctx) error {
 	var request UserRequest
 
-	if err := utils.ParseRequestBody(c, &request); err != nil {
-		return err
-	}
+	utils.ParseRequestBody(c, &request)
 
 	user, err := helpers.FindUser(request.Username, request.Password)
 	if err != nil {
@@ -55,9 +49,7 @@ func Login(c *fiber.Ctx) error {
 }
 
 func UpdateUsername(c *fiber.Ctx) error {
-	if err := utils.ParseRequestBody(c, &UpdateUsernameRequest); err != nil {
-		return err
-	}
+	utils.ParseRequestBody(c, &UpdateUsernameRequest)
 
 	if UpdateUsernameRequest.UpdatedUsername == "" {
 		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, "New username cannot be empty")
@@ -68,17 +60,13 @@ func UpdateUsername(c *fiber.Ctx) error {
 		return utils.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	if err := db_services.UpdateUsernameInDB(c, &user, UpdateUsernameRequest.UpdatedUsername); err != nil {
-		return err
-	}
+	db_services.UpdateUsernameInDB(c, &user, UpdateUsernameRequest.UpdatedUsername)
 
 	return services.UpdateUsernameResponse(c, UpdateUsernameRequest.UpdatedUsername)
 }
 
 func UpdatePassword(c *fiber.Ctx) error {
-	if err := utils.ParseRequestBody(c, &UpdatePasswordRequest); err != nil {
-		return err
-	}
+	utils.ParseRequestBody(c, &UpdatePasswordRequest)
 
 	user, err := helpers.FindUser(UpdatePasswordRequest.Username, UpdatePasswordRequest.Password)
 	if err != nil {
@@ -94,34 +82,26 @@ func UpdatePassword(c *fiber.Ctx) error {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, "Failed to hash password")
 	}
 
-	if err := db_services.UpdatePasswordInDB(c, &user, hashedPassword); err != nil {
-		return err
-	}
+	db_services.UpdatePasswordInDB(c, &user, hashedPassword)
 
 	return c.Status(fiber.StatusNoContent).SendString("Password updated!")
 }
 
 func UpdateUserRole(c *fiber.Ctx) error {
-	if err := utils.ParseRequestBody(c, &UpdateUserRoleRequest); err != nil {
-		return err
-	}
+	utils.ParseRequestBody(c, &UpdateUserRoleRequest)
 
 	user, err := helpers.FindUser(UpdateUserRoleRequest.Username, UpdateUserRoleRequest.Password)
 	if err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	if err := db_services.UpdateUserRoleInDB(c, &user, UpdateUserRoleRequest.RoleID); err != nil {
-		return err
-	}
+	db_services.UpdateUserRoleInDB(c, &user, UpdateUserRoleRequest.RoleID)
 
 	return services.UpdateUserRoleResponse(c, UpdateUserRoleRequest.RoleID)
 }
 
 func GetUsersByRole(c *fiber.Ctx) error {
-	if err := utils.ParseRequestBody(c, &GetUsersByRoleRequest); err != nil {
-		return err
-	}
+	utils.ParseRequestBody(c, &GetUsersByRoleRequest)
 
 	users, err := db_services.UsersByRoleInDB(c, GetUsersByRoleRequest.RoleID)
 	if err != nil {
@@ -134,18 +114,14 @@ func GetUsersByRole(c *fiber.Ctx) error {
 func DeleteUser(c *fiber.Ctx) error {
 	var request UserRequest
 
-	if err := utils.ParseRequestBody(c, &request); err != nil {
-		return err
-	}
+	utils.ParseRequestBody(c, &request)
 
 	user, err := helpers.FindUser(request.Username, request.Password)
 	if err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	if err := db_services.DeleteUserInDB(c, &user); err != nil {
-		return err
-	}
+	db_services.DeleteUserInDB(c, &user)
 
 	return services.DeleteUserResponse(c, &user)
 }

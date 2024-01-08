@@ -9,7 +9,7 @@ import (
 
 func ExpenseRoutes(app *fiber.App) {
 	app.Get("/expenses", handlers.GetExpenses)
-	// app.Get("/expenses/user", handlers.GetExpensesByUser)
+	app.Get("/expenses/user", handlers.GetExpensesByUser)
 
 	expenseRoutes := app.Group("/expense", middlewares.ValidateToken)
 	{

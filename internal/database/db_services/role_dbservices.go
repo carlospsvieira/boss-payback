@@ -4,21 +4,24 @@ import (
 	"boss-payback/internal/database"
 	"boss-payback/internal/database/models"
 	"boss-payback/pkg/utils"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func CreateRoleInDB(c *fiber.Ctx, role *models.Role) error {
-	database.DB.Db.Create(role)
+	if err := database.DB.Db.Create(role).Error; err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+	}
 
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"data": fiber.Map{
-			"name":        role.Name,
-			"description": role.Description,
-		},
-		"message": fmt.Sprintf("%s role was created!", role.Name),
-	})
+	return nil
+}
+
+func GetRolesInDB(c *fiber.Ctx, roles []models.Role) error {
+	if err := database.DB.Db.Find(roles).Error; err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	return nil
 }
 
 func UpdateRoleNameInDB(c *fiber.Ctx, role *models.Role, updatedRoleName string) error {
@@ -26,13 +29,7 @@ func UpdateRoleNameInDB(c *fiber.Ctx, role *models.Role, updatedRoleName string)
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data": fiber.Map{
-			"name":        updatedRoleName,
-			"description": role.Description,
-		},
-		"message": fmt.Sprintf("Role with id %d was updated", role.ID),
-	})
+	return nil
 }
 
 func UpdateRoleDescriptionInDB(c *fiber.Ctx, role *models.Role, updatedRoleDescription string) error {
@@ -40,13 +37,7 @@ func UpdateRoleDescriptionInDB(c *fiber.Ctx, role *models.Role, updatedRoleDescr
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data": fiber.Map{
-			"name":        role.Name,
-			"description": updatedRoleDescription,
-		},
-		"message": fmt.Sprintf("Role with id %d was updated", role.ID),
-	})
+	return nil
 }
 
 func DeleteRoleInDB(c *fiber.Ctx, role *models.Role) error {
@@ -54,7 +45,5 @@ func DeleteRoleInDB(c *fiber.Ctx, role *models.Role) error {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": fmt.Sprintf("%s was deleted!", role.Name),
-	})
+	return nil
 }

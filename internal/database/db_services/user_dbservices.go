@@ -31,8 +31,7 @@ func UpdateUsernameInDB(c *fiber.Ctx, user *models.User, updatedUsername string)
 }
 
 func UpdatePasswordInDB(c *fiber.Ctx, user *models.User, hashedPassword []byte) error {
-
-	if err := database.DB.Db.Model(&user).Where("id = ?", user.ID).Update("password", hashedPassword).Error; err != nil {
+	if err := database.DB.Db.Model(user).Where("id = ?", user.ID).Update("password", hashedPassword).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 

@@ -44,6 +44,10 @@ var UpdateExpenseDescriptionRequest struct {
 	Description string `json:"description"`
 }
 
+var GetExpensesByUserRequest struct {
+	UserID uint `json:"userId"`
+}
+
 var DeleteExpenseRequest struct {
 	ID uint `json:"id"`
 }
