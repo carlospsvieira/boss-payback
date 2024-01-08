@@ -7,31 +7,31 @@ type UserRequest struct {
 
 var UpdateUsernameRequest struct {
 	UserRequest
-	NewUsername string `json:"newUsername"`
+	UpdatedUsername string `json:"updatedUsername"`
 }
 
 var UpdatePasswordRequest struct {
 	UserRequest
-	NewPassword string `json:"newPassword"`
+	UpdatedPassword string `json:"updatedPassword"`
 }
 
 var UpdateUserRoleRequest struct {
 	UserRequest
-	NewRoleID uint `json:"newRoleId"`
+	RoleID uint `json:"roleId"`
 }
 
 var GetUsersByRoleRequest struct {
-	RoleId uint `json:"roleId"`
+	RoleID uint `json:"roleId"`
 }
 
 var UpdateRoleNameRequest struct {
-	ID      uint   `json:"id"`
-	NewName string `json:"newName"`
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
 }
 
 var UpdateRoleDescriptionRequest struct {
-	ID             uint   `json:"id"`
-	NewDescription string `json:"newDescription"`
+	ID          uint   `json:"id"`
+	Description string `json:"description"`
 }
 
 var UpdateExpenseAmountRequest struct {

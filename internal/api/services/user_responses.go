@@ -2,9 +2,7 @@ package services
 
 import (
 	"boss-payback/internal/api/auth"
-	"boss-payback/internal/database"
 	"boss-payback/internal/database/models"
-	"boss-payback/pkg/helpers"
 	"boss-payback/pkg/utils"
 	"fmt"
 
@@ -18,9 +16,6 @@ type UserByRole struct {
 }
 
 func CreateUserResponse(c *fiber.Ctx, user *models.User) error {
-	if err := database.DB.Db.Create(user).Error; err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, "Failed to create user")
-	}
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"data": fiber.Map{
 			"username": user.Username,
@@ -31,11 +26,7 @@ func CreateUserResponse(c *fiber.Ctx, user *models.User) error {
 	})
 }
 
-func LoginResponse(c *fiber.Ctx, user *models.User) error {
-	if err := database.DB.Db.Model(user).Where("id = ?", user.ID).Update("logged_in", true).Error; err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
-	}
-
+func LoginUserResponse(c *fiber.Ctx, user *models.User) error {
 	token, err := auth.CreateToken(user.Username)
 	if err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, "Error generating token")
@@ -52,11 +43,7 @@ func LoginResponse(c *fiber.Ctx, user *models.User) error {
 	})
 }
 
-func UpdateUsernameResponse(c *fiber.Ctx, user *models.User, updatedUsername string) error {
-	if err := database.DB.Db.Model(user).Where("id = ?", user.ID).Update("username", updatedUsername).Error; err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
-	}
-
+func UpdateUsernameResponse(c *fiber.Ctx, updatedUsername string) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"data": fiber.Map{
 			"updatedUsername": updatedUsername,
@@ -65,24 +52,7 @@ func UpdateUsernameResponse(c *fiber.Ctx, user *models.User, updatedUsername str
 	})
 }
 
-func UpdatePasswordResponse(c *fiber.Ctx, user *models.User, updatedPassword string) error {
-	hashedPassword, err := helpers.HashPassword(updatedPassword)
-	if err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, "Failed to hash password")
-	}
-
-	if err := database.DB.Db.Model(&user).Where("id = ?", user.ID).Update("password", hashedPassword).Error; err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
-	}
-
-	return c.Status(fiber.StatusNoContent).SendString("Password updated!")
-}
-
-func UpdateUserRoleResponse(c *fiber.Ctx, user *models.User, updatedRole uint) error {
-	if err := database.DB.Db.Model(user).Where("id = ?", user.ID).Update("role_id", updatedRole).Error; err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
-	}
-
+func UpdateUserRoleResponse(c *fiber.Ctx, updatedRole uint) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"data": fiber.Map{
 			"updatedRole": updatedRole,
@@ -91,12 +61,7 @@ func UpdateUserRoleResponse(c *fiber.Ctx, user *models.User, updatedRole uint) e
 	})
 }
 
-func UsersByRoleResponse(c *fiber.Ctx, roleId uint) error {
-	var users []models.User
-	if err := database.DB.Db.Where("role_id = ?", roleId).Find(&users).Error; err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
-	}
-
+func UsersByRoleResponse(c *fiber.Ctx, roleId uint, users []models.User) error {
 	userCh := make(chan UserByRole)
 	defer close(userCh)
 
@@ -125,10 +90,6 @@ func UsersByRoleResponse(c *fiber.Ctx, roleId uint) error {
 }
 
 func DeleteUserResponse(c *fiber.Ctx, user *models.User) error {
-	if err := database.DB.Db.Unscoped().Delete(user).Error; err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
-	}
-
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": fmt.Sprintf("%s was deleted!", user.Username),
 	})

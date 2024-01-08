@@ -1,4 +1,4 @@
-package services
+package db_services
 
 import (
 	"boss-payback/internal/database"
@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateExpenseResponse(c *fiber.Ctx, expense *models.Expense) error {
+func CreateExpenseInDB(c *fiber.Ctx, expense *models.Expense) error {
 	var user models.User
 	if err := database.DB.Db.Model(&user).Where("id = ? AND logged_in = ?", expense.UserID, true).First(&user).Error; err != nil {
 		return err
@@ -27,7 +27,7 @@ func CreateExpenseResponse(c *fiber.Ctx, expense *models.Expense) error {
 	})
 }
 
-func UpdateExpenseAmountResponse(c *fiber.Ctx, id uint, updatedAmount float64) error {
+func UpdateExpenseAmountInDB(c *fiber.Ctx, id uint, updatedAmount float64) error {
 	var expense models.Expense
 	if err := database.DB.Db.Model(&expense).Where("id = ?", id).Update("amount", updatedAmount).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
@@ -41,7 +41,7 @@ func UpdateExpenseAmountResponse(c *fiber.Ctx, id uint, updatedAmount float64) e
 	})
 }
 
-func UpdateExpenseDescriptionResponse(c *fiber.Ctx, id uint, updatedDesctiption string) error {
+func UpdateExpenseDescriptionInDB(c *fiber.Ctx, id uint, updatedDesctiption string) error {
 	var expense models.Expense
 	if err := database.DB.Db.Model(&expense).Where("id = ?", id).Update("description", updatedDesctiption).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
@@ -55,7 +55,7 @@ func UpdateExpenseDescriptionResponse(c *fiber.Ctx, id uint, updatedDesctiption 
 	})
 }
 
-func DeleteExpenseResponse(c *fiber.Ctx, expense *models.Expense) error {
+func DeleteExpenseInDB(c *fiber.Ctx, expense *models.Expense) error {
 	if err := database.DB.Db.Unscoped().Delete(expense).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}

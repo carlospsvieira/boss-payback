@@ -1,8 +1,9 @@
 package handlers
 
 import (
+	"boss-payback/internal/api/services"
+	"boss-payback/internal/database/db_services"
 	"boss-payback/internal/database/models"
-	"boss-payback/internal/database/services"
 	"boss-payback/pkg/helpers"
 	"boss-payback/pkg/utils"
 
@@ -31,6 +32,10 @@ func Register(c *fiber.Ctx) error {
 
 	user.Password = string(hashedPassword)
 
+	if err := db_services.CreateUserInDB(c, &user); err != nil {
+		return err
+	}
+
 	return services.CreateUserResponse(c, &user)
 }
 
@@ -46,7 +51,11 @@ func Login(c *fiber.Ctx) error {
 		return utils.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	return services.LoginResponse(c, &user)
+	if err := db_services.LoginUserInDB(c, &user); err != nil {
+		return err
+	}
+
+	return services.LoginUserResponse(c, &user)
 }
 
 func UpdateUsername(c *fiber.Ctx) error {
@@ -54,7 +63,7 @@ func UpdateUsername(c *fiber.Ctx) error {
 		return err
 	}
 
-	if UpdateUsernameRequest.NewUsername == "" {
+	if UpdateUsernameRequest.UpdatedUsername == "" {
 		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, "New username cannot be empty")
 	}
 
@@ -63,7 +72,11 @@ func UpdateUsername(c *fiber.Ctx) error {
 		return utils.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	return services.UpdateUsernameResponse(c, &user, UpdateUsernameRequest.NewUsername)
+	if err := db_services.UpdateUsernameInDB(c, &user, UpdateUsernameRequest.UpdatedUsername); err != nil {
+		return err
+	}
+
+	return services.UpdateUsernameResponse(c, UpdateUsernameRequest.UpdatedUsername)
 }
 
 func UpdatePassword(c *fiber.Ctx) error {
@@ -76,11 +89,20 @@ func UpdatePassword(c *fiber.Ctx) error {
 		return utils.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	if !helpers.ValidatePassword(UpdatePasswordRequest.Password) {
+	if !helpers.ValidatePassword(UpdatePasswordRequest.UpdatedPassword) {
 		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, "New password does not meet criteria")
 	}
 
-	return services.UpdatePasswordResponse(c, &user, UpdatePasswordRequest.Password)
+	hashedPassword, err := helpers.HashPassword(UpdatePasswordRequest.UpdatedPassword)
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, "Failed to hash password")
+	}
+
+	if err := db_services.UpdatePasswordInDB(c, &user, hashedPassword); err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusNoContent).SendString("Password updated!")
 }
 
 func UpdateUserRole(c *fiber.Ctx) error {
@@ -93,7 +115,11 @@ func UpdateUserRole(c *fiber.Ctx) error {
 		return utils.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	return services.UpdateUserRoleResponse(c, &user, UpdateUserRoleRequest.NewRoleID)
+	if err := db_services.UpdateUserRoleInDB(c, &user, UpdateUserRoleRequest.RoleID); err != nil {
+		return err
+	}
+
+	return services.UpdateUserRoleResponse(c, UpdateUserRoleRequest.RoleID)
 }
 
 func GetUsersByRole(c *fiber.Ctx) error {
@@ -101,22 +127,28 @@ func GetUsersByRole(c *fiber.Ctx) error {
 		return err
 	}
 
-	return services.UsersByRoleResponse(c, GetUsersByRoleRequest.RoleId)
-}
-
-func DeleteUser(c *fiber.Ctx) error {
-	var userRequest struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
-	if err := utils.ParseRequestBody(c, &userRequest); err != nil {
+	users, err := db_services.UsersByRoleInDB(c, GetUsersByRoleRequest.RoleID)
+	if err != nil {
 		return err
 	}
 
-	user, err := helpers.FindUser(userRequest.Username, userRequest.Password)
+	return services.UsersByRoleResponse(c, GetUsersByRoleRequest.RoleID, users)
+}
+
+func DeleteUser(c *fiber.Ctx) error {
+	var request UserRequest
+
+	if err := utils.ParseRequestBody(c, &request); err != nil {
+		return err
+	}
+
+	user, err := helpers.FindUser(request.Username, request.Password)
 	if err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusUnauthorized, "Invalid credentials")
+	}
+
+	if err := db_services.DeleteUserInDB(c, &user); err != nil {
+		return err
 	}
 
 	return services.DeleteUserResponse(c, &user)

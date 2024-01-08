@@ -9,8 +9,7 @@ type User struct {
 	Username string `json:"username" gorm:"unique;not null"`
 	Password string `json:"password" gorm:"not null"`
 	Email    string `json:"email" gorm:"unique;not null"`
-	RoleID   uint   `json:"roleid"`
+	RoleID   uint   `json:"roleId"`
 	Role     Role
-	Expenses []Expense
 	LoggedIn bool `json:"loggedIn" gorm:"default:false"`
 }

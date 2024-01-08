@@ -1,4 +1,4 @@
-package services
+package db_services
 
 import (
 	"boss-payback/internal/database"
@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateRoleResponse(c *fiber.Ctx, role *models.Role) error {
+func CreateRoleInDB(c *fiber.Ctx, role *models.Role) error {
 	database.DB.Db.Create(role)
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
@@ -21,7 +21,7 @@ func CreateRoleResponse(c *fiber.Ctx, role *models.Role) error {
 	})
 }
 
-func UpdateRoleNameResponse(c *fiber.Ctx, role *models.Role, updatedRoleName string) error {
+func UpdateRoleNameInDB(c *fiber.Ctx, role *models.Role, updatedRoleName string) error {
 	if err := database.DB.Db.Model(role).Where("id = ?", role.ID).Update("name", updatedRoleName).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
@@ -35,7 +35,7 @@ func UpdateRoleNameResponse(c *fiber.Ctx, role *models.Role, updatedRoleName str
 	})
 }
 
-func UpdateRoleDescriptionResponse(c *fiber.Ctx, role *models.Role, updatedRoleDescription string) error {
+func UpdateRoleDescriptionInDB(c *fiber.Ctx, role *models.Role, updatedRoleDescription string) error {
 	if err := database.DB.Db.Model(role).Where("id = ?", role.ID).Update("description", updatedRoleDescription).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
@@ -49,7 +49,7 @@ func UpdateRoleDescriptionResponse(c *fiber.Ctx, role *models.Role, updatedRoleD
 	})
 }
 
-func DeleteRoleResponse(c *fiber.Ctx, role *models.Role) error {
+func DeleteRoleInDB(c *fiber.Ctx, role *models.Role) error {
 	if err := database.DB.Db.Unscoped().Delete(role).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}

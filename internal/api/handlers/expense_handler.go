@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"boss-payback/internal/database"
+	"boss-payback/internal/database/db_services"
 	"boss-payback/internal/database/models"
-	"boss-payback/internal/database/services"
 	"boss-payback/pkg/helpers"
 	"boss-payback/pkg/utils"
 
@@ -16,7 +16,7 @@ func CreateExpense(c *fiber.Ctx) error {
 		return err
 	}
 
-	return services.CreateExpenseResponse(c, &expense)
+	return db_services.CreateExpenseInDB(c, &expense)
 }
 
 func UpdateExpenseAmount(c *fiber.Ctx) error {
@@ -24,7 +24,7 @@ func UpdateExpenseAmount(c *fiber.Ctx) error {
 		return err
 	}
 
-	return services.UpdateExpenseAmountResponse(c, UpdateExpenseAmountRequest.ID, UpdateExpenseAmountRequest.Amount)
+	return db_services.UpdateExpenseAmountInDB(c, UpdateExpenseAmountRequest.ID, UpdateExpenseAmountRequest.Amount)
 }
 
 func UpdateExpenseDescription(c *fiber.Ctx) error {
@@ -32,7 +32,7 @@ func UpdateExpenseDescription(c *fiber.Ctx) error {
 		return err
 	}
 
-	return services.UpdateExpenseDescriptionResponse(c, UpdateExpenseDescriptionRequest.ID, UpdateExpenseDescriptionRequest.Description)
+	return db_services.UpdateExpenseDescriptionInDB(c, UpdateExpenseDescriptionRequest.ID, UpdateExpenseDescriptionRequest.Description)
 }
 
 func GetExpenses(c *fiber.Ctx) error {
@@ -58,5 +58,5 @@ func DeleteExpense(c *fiber.Ctx) error {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return services.DeleteExpenseResponse(c, &expense)
+	return db_services.DeleteExpenseInDB(c, &expense)
 }

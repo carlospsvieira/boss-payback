@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"boss-payback/internal/database"
+	"boss-payback/internal/database/db_services"
 	"boss-payback/internal/database/models"
-	"boss-payback/internal/database/services"
 	"boss-payback/pkg/helpers"
 	"boss-payback/pkg/utils"
 
@@ -16,7 +16,7 @@ func CreateRole(c *fiber.Ctx) error {
 		return err
 	}
 
-	return services.CreateRoleResponse(c, &role)
+	return db_services.CreateRoleInDB(c, &role)
 }
 
 func GetRoles(c *fiber.Ctx) error {
@@ -37,7 +37,7 @@ func UpdateRoleName(c *fiber.Ctx) error {
 		return err
 	}
 
-	if UpdateRoleNameRequest.NewName == "" {
+	if UpdateRoleNameRequest.Name == "" {
 		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, "Role name cannot be empty")
 	}
 
@@ -46,7 +46,7 @@ func UpdateRoleName(c *fiber.Ctx) error {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return services.UpdateRoleNameResponse(c, &role, UpdateRoleNameRequest.NewName)
+	return db_services.UpdateRoleNameInDB(c, &role, UpdateRoleNameRequest.Name)
 }
 
 func UpdateRoleDescription(c *fiber.Ctx) error {
@@ -59,7 +59,7 @@ func UpdateRoleDescription(c *fiber.Ctx) error {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return services.UpdateRoleDescriptionResponse(c, &role, UpdateRoleDescriptionRequest.NewDescription)
+	return db_services.UpdateRoleDescriptionInDB(c, &role, UpdateRoleDescriptionRequest.Description)
 }
 
 func DeleteRole(c *fiber.Ctx) error {
@@ -73,5 +73,5 @@ func DeleteRole(c *fiber.Ctx) error {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return services.DeleteRoleResponse(c, &role)
+	return db_services.DeleteRoleInDB(c, &role)
 }
