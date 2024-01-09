@@ -2,19 +2,20 @@ package routes
 
 import (
 	"boss-payback/internal/api/handlers"
-	"boss-payback/internal/api/middlewares"
+	// 	"boss-payback/internal/api/middlewares"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func WorkflowRoutes(app *fiber.App) {
-	app.Get("/expenses/user", handlers.GetExpensesByUser)
+	app.Get("/workflows", handlers.GetWorkflows)
+	// 	app.Get("/workflows/user", handlers.GetWorkflowsByUser)
 
-	expenseRoutes := app.Group("/expense", middlewares.ValidateToken)
-	{
-		expenseRoutes.Post("/new", handlers.CreateExpense)
-		expenseRoutes.Put("/amount", handlers.UpdateExpenseAmount)
-		expenseRoutes.Put("/description", handlers.UpdateExpenseDescription)
-		expenseRoutes.Delete("/delete", handlers.DeleteExpense)
-	}
+	// workflowRoutes := app.Group("/workflow", middlewares.ValidateToken)
+	//
+	//	{
+	app.Post("workflow/new", handlers.CreateWorkflow)
+	//		workflowRoutes.Put("/description", handlers.UpdateWorkflowDescription)
+	//		workflowRoutes.Delete("/delete", handlers.DeleteWorkflow)
+	//	}
 }

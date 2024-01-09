@@ -22,13 +22,9 @@ func CreateExpense(c *fiber.Ctx) error {
 	// }
 
 	var expense models.Expense
-	if err := utils.ParseRequestBody(c, &expense); err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
-	}
+	utils.ParseRequestBody(c, &expense)
 
-	if err := db_services.CreateExpenseInDB(c, &expense /*receiptImageURL */); err != nil {
-		return err
-	}
+	db_services.CreateExpenseInDB(c, &expense /*receiptImageURL */)
 
 	return services.CreateExpenseResponse(c, &expense)
 }

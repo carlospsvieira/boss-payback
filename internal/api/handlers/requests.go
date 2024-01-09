@@ -51,3 +51,12 @@ var GetExpensesByUserRequest struct {
 var DeleteExpenseRequest struct {
 	ID uint `json:"id"`
 }
+
+var UpdateWorkflowCommentsRequest struct {
+	ID       uint   `json:"id"`
+	Comments string `json:"comments"`
+}
+
+var DeleteWorkflowRequest struct {
+	ID uint `json:"id"`
+}
