@@ -9,11 +9,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateExpenseInDB(c *fiber.Ctx, expense *models.Expense) error {
+func CreateExpenseInDB(c *fiber.Ctx, expense *models.Expense /*receiptImageURL string */) error {
 	var user models.User
 	if err := database.DB.Db.Model(&user).Where("id = ?", expense.UserID).First(&user).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
+
+	// expense.ReceiptImage = receiptImageURL
 
 	if err := database.DB.Db.Create(&expense).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
