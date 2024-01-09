@@ -22,7 +22,16 @@ func CreateWorkflow(c *fiber.Ctx) error {
 func GetWorkflows(c *fiber.Ctx) error {
 	var workflows []models.Workflow
 
-	db_services.GetWorkflowsInDB(c, workflows)
+	db_services.GetWorkflowsInDB(c, &workflows)
 
-	return services.GetWorkflowsResponse(c, workflows)
+	return services.GetWorkflowsResponse(c, &workflows)
+}
+
+func GetWorkflowByApprover(c *fiber.Ctx) error {
+	var workflows []models.Workflow
+	utils.ParseRequestBody(c, &GetWorkflowByApproverRequest)
+
+	db_services.GetWorkflowByApproverInDB(c, &workflows, GetWorkflowByApproverRequest.ApproverID)
+
+	return services.GetWorkflowByApproverResponse(c, &workflows, GetWorkflowByApproverRequest.ApproverID)
 }

@@ -36,14 +36,14 @@ func UpdateExpenseDescriptionResponse(c *fiber.Ctx, updatedDescription string, i
 	})
 }
 
-func GetExpensesResponse(c *fiber.Ctx, expenses []models.Expense) error {
+func GetExpensesResponse(c *fiber.Ctx, expenses *[]models.Expense) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"data":    expenses,
 		"message": "Successfully fetched all expenses",
 	})
 }
 
-func GetExpensesByUserResponse(c *fiber.Ctx, expenses []models.Expense, userId uint) error {
+func GetExpensesByUserResponse(c *fiber.Ctx, expenses *[]models.Expense, userId uint) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"data":    expenses,
 		"message": fmt.Sprintf("Successfully fetched all expenses from user with id %d", userId),

@@ -48,18 +48,18 @@ func UpdateExpenseDescription(c *fiber.Ctx) error {
 func GetExpenses(c *fiber.Ctx) error {
 	var expenses []models.Expense
 
-	db_services.GetExpensesInDB(c, expenses)
+	db_services.GetExpensesInDB(c, &expenses)
 
-	return services.GetExpensesResponse(c, expenses)
+	return services.GetExpensesResponse(c, &expenses)
 }
 
 func GetExpensesByUser(c *fiber.Ctx) error {
 	var expenses []models.Expense
 	utils.ParseRequestBody(c, &GetExpensesByUserRequest)
 
-	db_services.GetExpensesByUserInDB(c, expenses, GetExpensesByUserRequest.UserID)
+	db_services.GetExpensesByUserInDB(c, &expenses, GetExpensesByUserRequest.UserID)
 
-	return services.GetExpensesByUserResponse(c, expenses, GetExpensesByUserRequest.UserID)
+	return services.GetExpensesByUserResponse(c, &expenses, GetExpensesByUserRequest.UserID)
 }
 
 func DeleteExpense(c *fiber.Ctx) error {

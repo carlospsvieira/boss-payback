@@ -16,7 +16,7 @@ func CreateRoleInDB(c *fiber.Ctx, role *models.Role) error {
 	return nil
 }
 
-func GetRolesInDB(c *fiber.Ctx, roles []models.Role) error {
+func GetRolesInDB(c *fiber.Ctx, roles *[]models.Role) error {
 	if err := database.DB.Db.Find(roles).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}

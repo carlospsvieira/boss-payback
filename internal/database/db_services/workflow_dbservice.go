@@ -16,8 +16,16 @@ func CreateWorkflowInDB(c *fiber.Ctx, workflow *models.Workflow) error {
 	return nil
 }
 
-func GetWorkflowsInDB(c *fiber.Ctx, workflows []models.Workflow) error {
-	if err := database.DB.Db.Find(&workflows).Error; err != nil {
+func GetWorkflowsInDB(c *fiber.Ctx, workflows *[]models.Workflow) error {
+	if err := database.DB.Db.Find(workflows).Error; err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	return nil
+}
+
+func GetWorkflowByApproverInDB(c *fiber.Ctx, workflows *[]models.Workflow, approverId uint) error {
+	if err := database.DB.Db.Where("approver_id = ?", approverId).Find(workflows).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 

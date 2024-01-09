@@ -47,7 +47,7 @@ func UpdateExpenseDescriptionInDB(c *fiber.Ctx, id uint, updatedDesctiption stri
 	})
 }
 
-func GetExpensesInDB(c *fiber.Ctx, expenses []models.Expense) error {
+func GetExpensesInDB(c *fiber.Ctx, expenses *[]models.Expense) error {
 	if err := database.DB.Db.Find(expenses).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
@@ -55,7 +55,7 @@ func GetExpensesInDB(c *fiber.Ctx, expenses []models.Expense) error {
 	return nil
 }
 
-func GetExpensesByUserInDB(c *fiber.Ctx, expenses []models.Expense, userId uint) error {
+func GetExpensesByUserInDB(c *fiber.Ctx, expenses *[]models.Expense, userId uint) error {
 	if err := database.DB.Db.Where("user_id = ?", userId).Find(expenses).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}

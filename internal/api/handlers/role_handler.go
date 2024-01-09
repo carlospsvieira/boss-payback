@@ -22,9 +22,9 @@ func CreateRole(c *fiber.Ctx) error {
 func GetRoles(c *fiber.Ctx) error {
 	var roles []models.Role
 
-	db_services.GetRolesInDB(c, roles)
+	db_services.GetRolesInDB(c, &roles)
 
-	return services.GetRolesResponse(c, roles)
+	return services.GetRolesResponse(c, &roles)
 }
 
 func UpdateRoleName(c *fiber.Ctx) error {

@@ -17,7 +17,7 @@ func CreateRoleResponse(c *fiber.Ctx, role *models.Role) error {
 	})
 }
 
-func GetRolesResponse(c *fiber.Ctx, roles []models.Role) error {
+func GetRolesResponse(c *fiber.Ctx, roles *[]models.Role) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"data":    roles,
 		"message": "Successfully fetched all roles",

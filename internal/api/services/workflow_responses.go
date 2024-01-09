@@ -2,6 +2,7 @@ package services
 
 import (
 	"boss-payback/internal/database/models"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -18,9 +19,16 @@ func CreateWorkflowResponse(c *fiber.Ctx, workflow *models.Workflow) error {
 	})
 }
 
-func GetWorkflowsResponse(c *fiber.Ctx, workflows []models.Workflow) error {
+func GetWorkflowsResponse(c *fiber.Ctx, workflows *[]models.Workflow) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"data":    workflows,
 		"message": "Successfully fetched all workflows",
+	})
+}
+
+func GetWorkflowByApproverResponse(c *fiber.Ctx, workflows *[]models.Workflow, approverId uint) error {
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"data":    workflows,
+		"message": fmt.Sprintf("Successfully fetched workflows from User %d", approverId),
 	})
 }

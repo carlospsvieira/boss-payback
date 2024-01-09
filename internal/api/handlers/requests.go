@@ -52,6 +52,10 @@ var DeleteExpenseRequest struct {
 	ID uint `json:"id"`
 }
 
+var GetWorkflowByApproverRequest struct {
+	ApproverID uint `json:"approverId"`
+}
+
 var UpdateWorkflowCommentsRequest struct {
 	ID       uint   `json:"id"`
 	Comments string `json:"comments"`
