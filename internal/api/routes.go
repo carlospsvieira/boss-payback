@@ -10,4 +10,5 @@ func Routes(app *fiber.App) {
 	routes.UserRoutes(app)
 	routes.RoleRoutes(app)
 	routes.ExpenseRoutes(app)
+	routes.WorkflowRoutes(app)
 }

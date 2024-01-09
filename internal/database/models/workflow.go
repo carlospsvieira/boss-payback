@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type ApprovalWorkflow struct {
+type Workflow struct {
 	gorm.Model
 	ExpenseID  uint   `json:"expenseId"`
 	ApproverID uint   `json:"approverId"`

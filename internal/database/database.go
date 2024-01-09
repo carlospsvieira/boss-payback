@@ -48,7 +48,7 @@ func ConnectDb() {
 		&models.User{},
 		&models.Role{},
 		&models.Expense{},
-		&models.ApprovalWorkflow{},
+		&models.Workflow{},
 	)
 
 	DB = DbInstance{
