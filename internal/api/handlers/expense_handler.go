@@ -4,7 +4,6 @@ import (
 	"boss-payback/internal/api/services"
 	"boss-payback/internal/database/db_services"
 	"boss-payback/internal/database/models"
-	"boss-payback/pkg/helpers"
 	"boss-payback/pkg/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -31,6 +30,10 @@ func CreateExpense(c *fiber.Ctx) error {
 
 func UpdateExpenseAmount(c *fiber.Ctx) error {
 	utils.ParseRequestBody(c, &UpdateExpenseAmountRequest)
+
+	if UpdateExpenseAmountRequest.Amount == 0 {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, "Amount cannot be missing or zero")
+	}
 
 	db_services.UpdateExpenseAmountInDB(c, UpdateExpenseAmountRequest.ID, UpdateExpenseAmountRequest.Amount)
 
@@ -63,12 +66,8 @@ func GetExpensesByUser(c *fiber.Ctx) error {
 }
 
 func DeleteExpense(c *fiber.Ctx) error {
-	utils.ParseRequestBody(c, &DeleteExpenseRequest)
-
-	expense, err := helpers.FindExpense(DeleteExpenseRequest.ID)
-	if err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
-	}
+	var expense models.Expense
+	utils.ParseRequestBody(c, &expense)
 
 	db_services.DeleteExpenseInDB(c, &expense)
 

@@ -24,16 +24,18 @@ func GetRolesInDB(c *fiber.Ctx, roles *[]models.Role) error {
 	return nil
 }
 
-func UpdateRoleNameInDB(c *fiber.Ctx, role *models.Role, updatedRoleName string) error {
-	if err := database.DB.Db.Model(role).Where("id = ?", role.ID).Update("name", updatedRoleName).Error; err != nil {
+func UpdateRoleNameInDB(c *fiber.Ctx, id uint, updatedRoleName string) error {
+	var role models.Role
+	if err := database.DB.Db.Model(&role).Where("id = ?", id).Update("name", updatedRoleName).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return nil
 }
 
-func UpdateRoleDescriptionInDB(c *fiber.Ctx, role *models.Role, updatedRoleDescription string) error {
-	if err := database.DB.Db.Model(role).Where("id = ?", role.ID).Update("description", updatedRoleDescription).Error; err != nil {
+func UpdateRoleDescriptionInDB(c *fiber.Ctx, id uint, updatedRoleDescription string) error {
+	var role models.Role
+	if err := database.DB.Db.Model(&role).Where("id = ?", id).Update("description", updatedRoleDescription).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -41,7 +43,7 @@ func UpdateRoleDescriptionInDB(c *fiber.Ctx, role *models.Role, updatedRoleDescr
 }
 
 func DeleteRoleInDB(c *fiber.Ctx, role *models.Role) error {
-	if err := database.DB.Db.Unscoped().Delete(role).Error; err != nil {
+	if err := database.DB.Db.Model(role).Where("id = ?", role.ID).Unscoped().Delete(role).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 

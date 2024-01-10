@@ -35,3 +35,42 @@ func GetWorkflowByApprover(c *fiber.Ctx) error {
 
 	return services.GetWorkflowByApproverResponse(c, &workflows, GetWorkflowByApproverRequest.ApproverID)
 }
+
+func GetWorkflowByExpense(c *fiber.Ctx) error {
+	var workflows []models.Workflow
+	utils.ParseRequestBody(c, &GetWorkflowByExpenseRequest)
+
+	db_services.GetWorkflowByExpenseInDB(c, &workflows, GetWorkflowByExpenseRequest.ExpenseID)
+
+	return services.GetWorkflowByExpenseResponse(c, &workflows, GetWorkflowByExpenseRequest.ExpenseID)
+}
+
+func UpdateWorkflowStatus(c *fiber.Ctx) error {
+	request := &UpdateWorkflowStatusRequest
+
+	utils.ParseRequestBody(c, request)
+
+	db_services.UpdateWorkflowStatusInDB(c, request.ID, request.Status)
+
+	return services.UpdateWorkflowStatusResponse(c, request.ID, request.Status)
+}
+
+func UpdateWorkflowComments(c *fiber.Ctx) error {
+	request := &UpdateWorkflowCommentsRequest
+
+	utils.ParseRequestBody(c, request)
+
+	db_services.UpdateWorkflowCommentsInDB(c, request.ID, request.Comments)
+
+	return services.UpdateWorkflowCommentsResponse(c, request.ID, request.Comments)
+}
+
+func DeleteWorkflow(c *fiber.Ctx) error {
+	var workflow models.Workflow
+
+	utils.ParseRequestBody(c, &workflow)
+
+	db_services.DeleteWorkflowInDB(c, &workflow)
+
+	return services.DeleteWorkflowResponse(c, &workflow)
+}

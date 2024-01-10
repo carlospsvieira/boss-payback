@@ -20,7 +20,7 @@ var UpdateUserRoleRequest struct {
 	RoleID uint `json:"roleId"`
 }
 
-var GetUsersByRoleRequest struct {
+type GetUsersByRoleRequest struct {
 	RoleID uint `json:"roleId"`
 }
 
@@ -48,12 +48,12 @@ var GetExpensesByUserRequest struct {
 	UserID uint `json:"userId"`
 }
 
-var DeleteExpenseRequest struct {
-	ID uint `json:"id"`
-}
-
 var GetWorkflowByApproverRequest struct {
 	ApproverID uint `json:"approverId"`
+}
+
+var GetWorkflowByExpenseRequest struct {
+	ExpenseID uint `json:"expenseId"`
 }
 
 var UpdateWorkflowCommentsRequest struct {
@@ -61,6 +61,7 @@ var UpdateWorkflowCommentsRequest struct {
 	Comments string `json:"comments"`
 }
 
-var DeleteWorkflowRequest struct {
-	ID uint `json:"id"`
+var UpdateWorkflowStatusRequest struct {
+	ID     uint   `json:"id"`
+	Status string `json:"status"`
 }

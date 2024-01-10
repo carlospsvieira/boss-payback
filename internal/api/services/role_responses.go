@@ -24,28 +24,26 @@ func GetRolesResponse(c *fiber.Ctx, roles *[]models.Role) error {
 	})
 }
 
-func UpdatedRoleNameResponse(c *fiber.Ctx, role *models.Role, updatedRoleName string) error {
+func UpdatedRoleNameResponse(c *fiber.Ctx, id uint, updatedRoleName string) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"data": fiber.Map{
-			"name":        updatedRoleName,
-			"description": role.Description,
+			"name": updatedRoleName,
 		},
-		"message": fmt.Sprintf("Role with id %d was updated", role.ID),
+		"message": fmt.Sprintf("Role with id %d was updated", id),
 	})
 }
 
-func UpdateRoleDescriptionResponse(c *fiber.Ctx, role *models.Role, updatedRoleDescription string) error {
+func UpdateRoleDescriptionResponse(c *fiber.Ctx, id uint, updatedRoleDescription string) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"data": fiber.Map{
-			"name":        role.Name,
 			"description": updatedRoleDescription,
 		},
-		"message": fmt.Sprintf("Role with id %d was updated", role.ID),
+		"message": fmt.Sprintf("Role with id %d was updated", id),
 	})
 }
 
 func DeleteRoleResponse(c *fiber.Ctx, role *models.Role) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": fmt.Sprintf("%s was deleted!", role.Name),
+		"message": fmt.Sprintf("Role with id %d was deleted!", role.ID),
 	})
 }

@@ -4,7 +4,6 @@ import (
 	"boss-payback/internal/database"
 	"boss-payback/internal/database/models"
 	"boss-payback/pkg/utils"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -39,12 +38,7 @@ func UpdateExpenseDescriptionInDB(c *fiber.Ctx, id uint, updatedDesctiption stri
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data": fiber.Map{
-			"description": updatedDesctiption,
-		},
-		"message": fmt.Sprintf("Expense with id %d was updated.", id),
-	})
+	return nil
 }
 
 func GetExpensesInDB(c *fiber.Ctx, expenses *[]models.Expense) error {
@@ -64,7 +58,7 @@ func GetExpensesByUserInDB(c *fiber.Ctx, expenses *[]models.Expense, userId uint
 }
 
 func DeleteExpenseInDB(c *fiber.Ctx, expense *models.Expense) error {
-	if err := database.DB.Db.Unscoped().Delete(expense).Error; err != nil {
+	if err := database.DB.Db.Model(expense).Where("id = ?", expense.ID).Unscoped().Delete(expense).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 

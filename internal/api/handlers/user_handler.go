@@ -101,14 +101,15 @@ func UpdateUserRole(c *fiber.Ctx) error {
 }
 
 func GetUsersByRole(c *fiber.Ctx) error {
-	utils.ParseRequestBody(c, &GetUsersByRoleRequest)
+	var request GetUsersByRoleRequest
+	utils.ParseRequestBody(c, &request)
 
-	users, err := db_services.UsersByRoleInDB(c, GetUsersByRoleRequest.RoleID)
+	users, err := db_services.UsersByRoleInDB(c, request.RoleID)
 	if err != nil {
 		return err
 	}
 
-	return services.UsersByRoleResponse(c, GetUsersByRoleRequest.RoleID, users)
+	return services.UsersByRoleResponse(c, request.RoleID, users)
 }
 
 func DeleteUser(c *fiber.Ctx) error {
