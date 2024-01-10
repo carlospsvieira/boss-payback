@@ -29,23 +29,25 @@ func CreateExpense(c *fiber.Ctx) error {
 }
 
 func UpdateExpenseAmount(c *fiber.Ctx) error {
-	utils.ParseRequestBody(c, &UpdateExpenseAmountRequest)
+	var request UpdateExpenseAmountRequest
+	utils.ParseRequestBody(c, &request)
 
-	if UpdateExpenseAmountRequest.Amount == 0 {
+	if request.Amount == 0 {
 		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, "Amount cannot be missing or zero")
 	}
 
-	db_services.UpdateExpenseAmountInDB(c, UpdateExpenseAmountRequest.ID, UpdateExpenseAmountRequest.Amount)
+	db_services.UpdateExpenseAmountInDB(c, request.ID, request.Amount)
 
-	return services.UpdateExpenseAmountResponse(c, UpdateExpenseAmountRequest.Amount, UpdateExpenseAmountRequest.ID)
+	return services.UpdateExpenseAmountResponse(c, request.Amount, request.ID)
 }
 
 func UpdateExpenseDescription(c *fiber.Ctx) error {
-	utils.ParseRequestBody(c, &UpdateExpenseDescriptionRequest)
+	var request UpdateExpenseDescriptionRequest
+	utils.ParseRequestBody(c, &request)
 
-	db_services.UpdateExpenseDescriptionInDB(c, UpdateExpenseDescriptionRequest.ID, UpdateExpenseDescriptionRequest.Description)
+	db_services.UpdateExpenseDescriptionInDB(c, request.ID, request.Description)
 
-	return services.UpdateExpenseDescriptionResponse(c, UpdateExpenseDescriptionRequest.Description, UpdateExpenseDescriptionRequest.ID)
+	return services.UpdateExpenseDescriptionResponse(c, request.Description, request.ID)
 }
 
 func GetExpenses(c *fiber.Ctx) error {
@@ -57,12 +59,14 @@ func GetExpenses(c *fiber.Ctx) error {
 }
 
 func GetExpensesByUser(c *fiber.Ctx) error {
+	var request GetExpensesByUserRequest
 	var expenses []models.Expense
-	utils.ParseRequestBody(c, &GetExpensesByUserRequest)
 
-	db_services.GetExpensesByUserInDB(c, &expenses, GetExpensesByUserRequest.UserID)
+	utils.ParseRequestBody(c, &request)
 
-	return services.GetExpensesByUserResponse(c, &expenses, GetExpensesByUserRequest.UserID)
+	db_services.GetExpensesByUserInDB(c, &expenses, request.UserID)
+
+	return services.GetExpensesByUserResponse(c, &expenses, request.UserID)
 }
 
 func DeleteExpense(c *fiber.Ctx) error {

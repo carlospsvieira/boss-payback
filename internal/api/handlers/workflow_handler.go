@@ -28,25 +28,28 @@ func GetWorkflows(c *fiber.Ctx) error {
 }
 
 func GetWorkflowByApprover(c *fiber.Ctx) error {
+	var request GetWorkflowByApproverRequest
 	var workflows []models.Workflow
-	utils.ParseRequestBody(c, &GetWorkflowByApproverRequest)
+	utils.ParseRequestBody(c, &request)
 
-	db_services.GetWorkflowByApproverInDB(c, &workflows, GetWorkflowByApproverRequest.ApproverID)
+	db_services.GetWorkflowByApproverInDB(c, &workflows, request.ApproverID)
 
-	return services.GetWorkflowByApproverResponse(c, &workflows, GetWorkflowByApproverRequest.ApproverID)
+	return services.GetWorkflowByApproverResponse(c, &workflows, request.ApproverID)
 }
 
 func GetWorkflowByExpense(c *fiber.Ctx) error {
+	var request GetWorkflowByExpenseRequest
 	var workflows []models.Workflow
-	utils.ParseRequestBody(c, &GetWorkflowByExpenseRequest)
 
-	db_services.GetWorkflowByExpenseInDB(c, &workflows, GetWorkflowByExpenseRequest.ExpenseID)
+	utils.ParseRequestBody(c, &request)
 
-	return services.GetWorkflowByExpenseResponse(c, &workflows, GetWorkflowByExpenseRequest.ExpenseID)
+	db_services.GetWorkflowByExpenseInDB(c, &workflows, request.ExpenseID)
+
+	return services.GetWorkflowByExpenseResponse(c, &workflows, request.ExpenseID)
 }
 
 func UpdateWorkflowStatus(c *fiber.Ctx) error {
-	request := &UpdateWorkflowStatusRequest
+	var request UpdateWorkflowStatusRequest
 
 	utils.ParseRequestBody(c, request)
 
@@ -56,7 +59,7 @@ func UpdateWorkflowStatus(c *fiber.Ctx) error {
 }
 
 func UpdateWorkflowComments(c *fiber.Ctx) error {
-	request := &UpdateWorkflowCommentsRequest
+	var request UpdateWorkflowCommentsRequest
 
 	utils.ParseRequestBody(c, request)
 

@@ -27,23 +27,25 @@ func GetRoles(c *fiber.Ctx) error {
 }
 
 func UpdateRoleName(c *fiber.Ctx) error {
-	utils.ParseRequestBody(c, &UpdateRoleNameRequest)
+	var request UpdateRoleNameRequest
+	utils.ParseRequestBody(c, &request)
 
-	if UpdateRoleNameRequest.Name == "" {
+	if request.Name == "" {
 		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, "Role name cannot be empty")
 	}
 
-	db_services.UpdateRoleNameInDB(c, UpdateRoleNameRequest.ID, UpdateRoleNameRequest.Name)
+	db_services.UpdateRoleNameInDB(c, request.ID, request.Name)
 
-	return services.UpdatedRoleNameResponse(c, UpdateRoleNameRequest.ID, UpdateRoleNameRequest.Name)
+	return services.UpdatedRoleNameResponse(c, request.ID, request.Name)
 }
 
 func UpdateRoleDescription(c *fiber.Ctx) error {
-	utils.ParseRequestBody(c, &UpdateRoleDescriptionRequest)
+	var request UpdateRoleDescriptionRequest
+	utils.ParseRequestBody(c, &request)
 
-	db_services.UpdateRoleDescriptionInDB(c, UpdateRoleDescriptionRequest.ID, UpdateRoleDescriptionRequest.Description)
+	db_services.UpdateRoleDescriptionInDB(c, request.ID, request.Description)
 
-	return services.UpdateRoleDescriptionResponse(c, UpdateRoleDescriptionRequest.ID, UpdateRoleDescriptionRequest.Description)
+	return services.UpdateRoleDescriptionResponse(c, request.ID, request.Description)
 }
 
 func DeleteRole(c *fiber.Ctx) error {
