@@ -8,13 +8,13 @@ import (
 )
 
 func RoleRoutes(app *fiber.App) {
-	app.Get("/roles", handlers.GetRoles)
 
-	roleRoutes := app.Group("/role", middlewares.ValidateToken)
+	adminRoutes := app.Group("/admin/role", middlewares.ValidateAdminToken)
 	{
-		roleRoutes.Post("/new", handlers.CreateRole)
-		roleRoutes.Put("/name", handlers.UpdateRoleName)
-		roleRoutes.Put("/description", handlers.UpdateRoleDescription)
-		roleRoutes.Delete("/delete", handlers.DeleteRole)
+		adminRoutes.Get("/", handlers.GetRoles)
+		adminRoutes.Post("/new", handlers.CreateRole)
+		adminRoutes.Put("/name", handlers.UpdateRoleName)
+		adminRoutes.Put("/description", handlers.UpdateRoleDescription)
+		adminRoutes.Delete("/delete", handlers.DeleteRole)
 	}
 }

@@ -12,11 +12,11 @@ func UserRoutes(app *fiber.App) {
 	app.Post("/register", handlers.Register)
 	app.Post("/login", handlers.Login)
 
-	userRoutes := app.Group("/user", middlewares.ValidateToken)
+	adminRoutes := app.Group("/admin/user", middlewares.ValidateAdminToken)
 	{
-		userRoutes.Put("/username", handlers.UpdateUsername)
-		userRoutes.Put("/password", handlers.UpdatePassword)
-		userRoutes.Put("/role", handlers.UpdateUserRole)
-		userRoutes.Delete("/delete", handlers.DeleteUser)
+		adminRoutes.Put("/username", handlers.UpdateUsername)
+		adminRoutes.Put("/password", handlers.UpdatePassword)
+		adminRoutes.Put("/role", handlers.UpdateUserRole)
+		adminRoutes.Delete("/delete", handlers.DeleteUser)
 	}
 }

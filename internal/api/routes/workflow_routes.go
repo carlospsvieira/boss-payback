@@ -8,12 +8,12 @@ import (
 )
 
 func WorkflowRoutes(app *fiber.App) {
-	app.Get("/workflows", handlers.GetWorkflows)
-	app.Get("/workflow/approver", handlers.GetWorkflowByApprover)
-	app.Get("/workflow/expense", handlers.GetWorkflowByExpense)
 
-	workflowRoutes := app.Group("/workflow", middlewares.ValidateToken)
+	workflowRoutes := app.Group("/workflow", middlewares.ValidateAdminAndApproverToken)
 	{
+		workflowRoutes.Get("/workflows", handlers.GetWorkflows)
+		workflowRoutes.Get("/approver", handlers.GetWorkflowByApprover)
+		workflowRoutes.Get("/expense", handlers.GetWorkflowByExpense)
 		workflowRoutes.Post("/new", handlers.CreateWorkflow)
 		workflowRoutes.Put("/status", handlers.UpdateWorkflowStatus)
 		workflowRoutes.Put("/comments", handlers.UpdateWorkflowComments)

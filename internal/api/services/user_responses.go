@@ -27,7 +27,7 @@ func CreateUserResponse(c *fiber.Ctx, user *models.User) error {
 }
 
 func LoginUserResponse(c *fiber.Ctx, user *models.User) error {
-	token, err := auth.CreateToken(user.Username)
+	token, err := auth.CreateToken(user.Username, user.RoleID)
 	if err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, "Error generating token")
 	}
