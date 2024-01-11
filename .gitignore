@@ -47,3 +47,6 @@ Thumbs.db
 
 # Compiled files from Air (if any)
 bin/
+
+# Uploads
+uploads/
