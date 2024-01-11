@@ -27,7 +27,7 @@ func TokenCheck(tokenString string) (uint, error) {
 		return 0, fmt.Errorf("invalid token claims")
 	}
 
-	roleID, ok := claims["roleID"].(float64)
+	roleID, ok := claims["roleId"].(float64)
 	if !ok {
 		return 0, fmt.Errorf("invalid roleID in token")
 	}

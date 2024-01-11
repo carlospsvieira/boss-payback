@@ -5,25 +5,50 @@ import (
 	"boss-payback/internal/database/db_services"
 	"boss-payback/internal/database/models"
 	"boss-payback/pkg/utils"
+	"os"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func CreateExpense(c *fiber.Ctx) error {
-	// file, err := c.FormFile("receiptImage")
-	// if err != nil {
-	// 	return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
-	// }
+	form, err := c.MultipartForm()
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
 
-	// receiptImageURL, err := helpers.SaveUploadedFile(file)
-	// if err != nil {
-	// 	return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
-	// }
+	description := form.Value["description"][0]
+	amountStr := form.Value["amount"][0]
+	userIDStr := form.Value["userId"][0]
 
-	var expense models.Expense
-	utils.ParseRequestBody(c, &expense)
+	amount, err := strconv.ParseFloat(amountStr, 64)
+	if err != nil {
+		return err
+	}
 
-	db_services.CreateExpenseInDB(c, &expense /*receiptImageURL */)
+	userID, err := strconv.ParseUint(userIDStr, 10, 32)
+	if err != nil {
+		return err
+	}
+
+	file, err := c.FormFile("receiptImage")
+	if err != nil {
+		return err
+	}
+
+	filePath := os.Getenv("UPLOADS_DIR_PATH") + file.Filename
+	if err := c.SaveFile(file, filePath); err != nil {
+		return err
+	}
+
+	expense := models.Expense{
+		UserID:       uint(userID),
+		Description:  description,
+		Amount:       amount,
+		ReceiptImage: filePath,
+	}
+
+	db_services.CreateExpenseInDB(c, &expense)
 
 	return services.CreateExpenseResponse(c, &expense)
 }

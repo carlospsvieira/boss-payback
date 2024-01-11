@@ -7,6 +7,7 @@ import (
 )
 
 func Routes(app *fiber.App) {
+	app.Static("/", "./uploads")
 	routes.UserRoutes(app)
 	routes.RoleRoutes(app)
 	routes.ExpenseRoutes(app)
