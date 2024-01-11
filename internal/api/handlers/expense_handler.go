@@ -4,9 +4,8 @@ import (
 	"boss-payback/internal/api/services"
 	"boss-payback/internal/database/db_services"
 	"boss-payback/internal/database/models"
+	"boss-payback/pkg/helpers"
 	"boss-payback/pkg/utils"
-	"os"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -17,32 +16,13 @@ func CreateExpense(c *fiber.Ctx) error {
 		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	description := form.Value["description"][0]
-	amountStr := form.Value["amount"][0]
-	userIDStr := form.Value["userId"][0]
-
-	amount, err := strconv.ParseFloat(amountStr, 64)
+	amount, userId, filePath, description, err := helpers.ExpenseForm(c, form)
 	if err != nil {
-		return err
-	}
-
-	userID, err := strconv.ParseUint(userIDStr, 10, 32)
-	if err != nil {
-		return err
-	}
-
-	file, err := c.FormFile("receiptImage")
-	if err != nil {
-		return err
-	}
-
-	filePath := os.Getenv("UPLOADS_DIR_PATH") + file.Filename
-	if err := c.SaveFile(file, filePath); err != nil {
-		return err
+		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	expense := models.Expense{
-		UserID:       uint(userID),
+		UserID:       userId,
 		Description:  description,
 		Amount:       amount,
 		ReceiptImage: filePath,
