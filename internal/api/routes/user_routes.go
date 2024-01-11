@@ -9,11 +9,11 @@ import (
 
 func UserRoutes(app *fiber.App) {
 	app.Get("/users", handlers.GetUsersByRole)
-	app.Post("/register", handlers.Register)
 	app.Post("/login", handlers.Login)
 
 	adminRoutes := app.Group("/admin/user", middlewares.ValidateAdminToken)
 	{
+		adminRoutes.Post("/register", handlers.Register)
 		adminRoutes.Put("/username", handlers.UpdateUsername)
 		adminRoutes.Put("/password", handlers.UpdatePassword)
 		adminRoutes.Put("/role", handlers.UpdateUserRole)

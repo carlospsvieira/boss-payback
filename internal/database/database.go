@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -51,7 +52,67 @@ func ConnectDb() {
 		&models.Workflow{},
 	)
 
+	if !checkRolesExist(db) {
+		insertDefaultRoles(db)
+	}
+
+	if !checkAdminExist(db) {
+		insertDefaultAdmin(db)
+	}
+
 	DB = DbInstance{
 		Db: db,
+	}
+}
+
+func checkRolesExist(db *gorm.DB) bool {
+	var count int64
+	var role models.Role
+
+	db.Model(&role).Where("name IN ?", []string{"admin", "approver", "employee"}).Count(&count)
+
+	return count == 3
+}
+
+func insertDefaultRoles(db *gorm.DB) {
+	roles := []models.Role{
+		{ID: 1, Name: "admin", Description: "allowed to everything"},
+		{ID: 2, Name: "approver", Description: "allowed to approve payback"},
+		{ID: 3, Name: "employee", Description: "allowed to request payback"},
+	}
+
+	for _, role := range roles {
+		result := db.FirstOrCreate(&role, role)
+		if result.Error != nil {
+			log.Fatalf("Failed to insert default role %s: %v", role.Name, result.Error)
+		}
+	}
+}
+
+func checkAdminExist(db *gorm.DB) bool {
+	var count int64
+	var user models.User
+
+	db.Model(&user).Where("role_id = ?", 1).Count(&count)
+
+	return count == 1
+}
+
+func insertDefaultAdmin(db *gorm.DB) {
+	admin := models.User{
+		Username: os.Getenv("ADMIN_USERNAME"),
+		Password: os.Getenv("ADMIN_PASSWORD"),
+		RoleID:   1,
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(admin.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return
+	}
+
+	admin.Password = string(hashedPassword)
+
+	if err := db.FirstOrCreate(&admin).Error; err != nil {
+		log.Fatalln("Failed to insert default admin")
 	}
 }

@@ -8,15 +8,20 @@ import (
 )
 
 func WorkflowRoutes(app *fiber.App) {
+	app.Get("/workflows", handlers.GetWorkflows)
+	app.Get("workflow/approver", handlers.GetWorkflowByApprover)
+	app.Get("workflow/expense", handlers.GetWorkflowByExpense)
 
-	workflowRoutes := app.Group("/workflow", middlewares.ValidateAdminAndApproverToken)
+	adminAndApproverRoutes := app.Group("/workflow", middlewares.ValidateAdminAndApproverToken)
 	{
-		workflowRoutes.Get("/workflows", handlers.GetWorkflows)
-		workflowRoutes.Get("/approver", handlers.GetWorkflowByApprover)
-		workflowRoutes.Get("/expense", handlers.GetWorkflowByExpense)
-		workflowRoutes.Post("/new", handlers.CreateWorkflow)
-		workflowRoutes.Put("/status", handlers.UpdateWorkflowStatus)
-		workflowRoutes.Put("/comments", handlers.UpdateWorkflowComments)
-		workflowRoutes.Delete("/delete", handlers.DeleteWorkflow)
+		adminAndApproverRoutes.Post("/new", handlers.CreateWorkflow)
+		adminAndApproverRoutes.Put("/status", handlers.UpdateWorkflowStatus)
+		adminAndApproverRoutes.Put("/comments", handlers.UpdateWorkflowComments)
 	}
+
+	adminRoutes := app.Group("/admin/workflow", middlewares.ValidateAdminAndApproverToken)
+	{
+		adminRoutes.Delete("/delete", handlers.DeleteWorkflow)
+	}
+
 }

@@ -18,7 +18,7 @@ func ExpenseRoutes(app *fiber.App) {
 		expenseRoutes.Put("/description", handlers.UpdateExpenseDescription)
 	}
 
-	adminRoutes := app.Group("/admin", middlewares.ValidateAdminToken)
+	adminRoutes := app.Group("/admin/expense", middlewares.ValidateAdminToken)
 	{
 		adminRoutes.Delete("/delete", handlers.DeleteExpense)
 	}
