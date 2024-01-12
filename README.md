@@ -2,7 +2,7 @@
 
 ## Overview
 
-Boss Payback is a web application built with [Fiber](https://github.com/gofiber/fiber), designed for managing users, roles, expenses, and workflows. The system utilizes JWT for authentication and connects to a PostgreSQL database.
+Boss Payback is an employee reimbursement system built with [Fiber](https://github.com/gofiber/fiber), designed for managing users, roles, expenses, and workflows.
 
 ## Prerequisites
 
@@ -119,6 +119,8 @@ Example command:
 make run
 ```
 ## Documentation
+
+ A pre-built auth-by-role is applied for roles `employee`, `approver` and `admin`, as well as your main admin user (add username and password to `.env`) so you can run any endpoint freely.
 
 For detailed insights into the API routes, models, and handlers, refer to the [Documentation](https://github.com/carlospsvieira/boss-payback/docs/api.md)
 
