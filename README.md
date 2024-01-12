@@ -122,5 +122,5 @@ make run
 
  A pre-built auth-by-role is applied for roles `employee`, `approver` and `admin`, as well as your main admin user (add username and password to `.env`) so you can run any endpoint freely.
 
-For detailed insights into the API routes, models, and handlers, refer to the [Documentation](https://github.com/carlospsvieira/boss-payback/docs/api.md)
+For detailed insights into the API routes, models, and handlers, refer to the [Documentation](https://github.com/carlospsvieira/boss-payback/blob/main/docs/api.md)
 
