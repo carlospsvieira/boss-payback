@@ -2,7 +2,9 @@
 
 ## Overview
 
-Boss Payback is an employee reimbursement system built with [Fiber](https://github.com/gofiber/fiber), designed for managing users, roles, expenses, and workflows.
+## Overview
+
+Boss Payback is an employee reimbursement and management system crafted using [Fiber](https://github.com/gofiber/fiber/). This platform efficiently oversee user management, role assignments, expense tracking, and workflow orchestration, ensuring seamless operations and optimal productivity.
 
 ## Prerequisites
 
