@@ -1,6 +1,6 @@
 # Boss Payback API Documentation
 
-This documentation provides an overview of the API routes, models, and handlers for the Boss Payback system.
+Provides an overview of the API routes, models, and handlers.
 
 ## Table of Contents
 
