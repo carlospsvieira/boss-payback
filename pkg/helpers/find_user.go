@@ -10,7 +10,7 @@ import (
 
 func FindUser(username string, password string) (models.User, error) {
 	var user models.User
-	if err := database.DB.Db.Where("username = ?", username).First(&user).Error; err != nil {
+	if err := database.Instance.Db.Where("username = ?", username).First(&user).Error; err != nil {
 		return user, err
 	}
 

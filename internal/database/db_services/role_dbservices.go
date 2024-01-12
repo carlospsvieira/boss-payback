@@ -9,7 +9,7 @@ import (
 )
 
 func CreateRoleInDB(c *fiber.Ctx, role *models.Role) error {
-	if err := database.DB.Db.Create(role).Error; err != nil {
+	if err := database.Instance.Db.Create(role).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -17,7 +17,7 @@ func CreateRoleInDB(c *fiber.Ctx, role *models.Role) error {
 }
 
 func GetRolesInDB(c *fiber.Ctx, roles *[]models.Role) error {
-	if err := database.DB.Db.Find(roles).Error; err != nil {
+	if err := database.Instance.Db.Find(roles).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -26,7 +26,7 @@ func GetRolesInDB(c *fiber.Ctx, roles *[]models.Role) error {
 
 func UpdateRoleNameInDB(c *fiber.Ctx, id uint, updatedRoleName string) error {
 	var role models.Role
-	if err := database.DB.Db.Model(&role).Where("id = ?", id).Update("name", updatedRoleName).Error; err != nil {
+	if err := database.Instance.Db.Model(&role).Where("id = ?", id).Update("name", updatedRoleName).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -35,7 +35,7 @@ func UpdateRoleNameInDB(c *fiber.Ctx, id uint, updatedRoleName string) error {
 
 func UpdateRoleDescriptionInDB(c *fiber.Ctx, id uint, updatedRoleDescription string) error {
 	var role models.Role
-	if err := database.DB.Db.Model(&role).Where("id = ?", id).Update("description", updatedRoleDescription).Error; err != nil {
+	if err := database.Instance.Db.Model(&role).Where("id = ?", id).Update("description", updatedRoleDescription).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -43,7 +43,7 @@ func UpdateRoleDescriptionInDB(c *fiber.Ctx, id uint, updatedRoleDescription str
 }
 
 func DeleteRoleInDB(c *fiber.Ctx, role *models.Role) error {
-	if err := database.DB.Db.Model(role).Where("id = ?", role.ID).Unscoped().Delete(role).Error; err != nil {
+	if err := database.Instance.Db.Model(role).Where("id = ?", role.ID).Unscoped().Delete(role).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 

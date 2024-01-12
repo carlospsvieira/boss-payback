@@ -9,7 +9,7 @@ import (
 )
 
 func CreateWorkflowInDB(c *fiber.Ctx, workflow *models.Workflow) error {
-	if err := database.DB.Db.Create(workflow).Error; err != nil {
+	if err := database.Instance.Db.Create(workflow).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -17,7 +17,7 @@ func CreateWorkflowInDB(c *fiber.Ctx, workflow *models.Workflow) error {
 }
 
 func GetWorkflowsInDB(c *fiber.Ctx, workflows *[]models.Workflow) error {
-	if err := database.DB.Db.Find(workflows).Error; err != nil {
+	if err := database.Instance.Db.Find(workflows).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -25,7 +25,7 @@ func GetWorkflowsInDB(c *fiber.Ctx, workflows *[]models.Workflow) error {
 }
 
 func GetWorkflowByApproverInDB(c *fiber.Ctx, workflows *[]models.Workflow, approverId uint) error {
-	if err := database.DB.Db.Where("approver_id = ?", approverId).Find(workflows).Error; err != nil {
+	if err := database.Instance.Db.Where("approver_id = ?", approverId).Find(workflows).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -33,7 +33,7 @@ func GetWorkflowByApproverInDB(c *fiber.Ctx, workflows *[]models.Workflow, appro
 }
 
 func GetWorkflowByExpenseInDB(c *fiber.Ctx, workflows *[]models.Workflow, expenseId uint) error {
-	if err := database.DB.Db.Where("expense_id = ?", expenseId).Find(workflows).Error; err != nil {
+	if err := database.Instance.Db.Where("expense_id = ?", expenseId).Find(workflows).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -42,7 +42,7 @@ func GetWorkflowByExpenseInDB(c *fiber.Ctx, workflows *[]models.Workflow, expens
 
 func UpdateWorkflowStatusInDB(c *fiber.Ctx, id uint, updatedStatus string) error {
 	var workflow models.Workflow
-	if err := database.DB.Db.Model(&workflow).Where("id = ?", id).Update("status", updatedStatus).Error; err != nil {
+	if err := database.Instance.Db.Model(&workflow).Where("id = ?", id).Update("status", updatedStatus).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -51,7 +51,7 @@ func UpdateWorkflowStatusInDB(c *fiber.Ctx, id uint, updatedStatus string) error
 
 func UpdateWorkflowCommentsInDB(c *fiber.Ctx, id uint, updatedComments string) error {
 	var workflow models.Workflow
-	if err := database.DB.Db.Model(&workflow).Where("id = ?", id).Update("comments", updatedComments).Error; err != nil {
+	if err := database.Instance.Db.Model(&workflow).Where("id = ?", id).Update("comments", updatedComments).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -59,7 +59,7 @@ func UpdateWorkflowCommentsInDB(c *fiber.Ctx, id uint, updatedComments string) e
 }
 
 func DeleteWorkflowInDB(c *fiber.Ctx, workflow *models.Workflow) error {
-	if err := database.DB.Db.Model(workflow).Where("id = ?", workflow.ID).Unscoped().Delete(&workflow).Error; err != nil {
+	if err := database.Instance.Db.Model(workflow).Where("id = ?", workflow.ID).Unscoped().Delete(&workflow).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 

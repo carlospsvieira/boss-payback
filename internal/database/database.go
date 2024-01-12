@@ -17,7 +17,7 @@ type DbInstance struct {
 	Db *gorm.DB
 }
 
-var DB DbInstance
+var Instance DbInstance
 
 func ConnectDb() {
 	if err := godotenv.Load(); err != nil {
@@ -60,7 +60,7 @@ func ConnectDb() {
 		insertDefaultAdmin(db)
 	}
 
-	DB = DbInstance{
+	Instance = DbInstance{
 		Db: db,
 	}
 }

@@ -9,15 +9,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateExpenseInDB(c *fiber.Ctx, expense *models.Expense /*receiptImageURL string */) error {
-	var user models.User
-	if err := database.DB.Db.Model(&user).Where("id = ?", expense.UserID).First(&user).Error; err != nil {
-		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
-	}
-
-	// expense.ReceiptImage = receiptImageURL
-
-	if err := database.DB.Db.Create(&expense).Error; err != nil {
+func CreateExpenseInDB(c *fiber.Ctx, expense *models.Expense) error {
+	if err := database.Instance.Db.Create(&expense).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -26,7 +19,7 @@ func CreateExpenseInDB(c *fiber.Ctx, expense *models.Expense /*receiptImageURL s
 
 func UpdateExpenseAmountInDB(c *fiber.Ctx, id uint, updatedAmount float64) error {
 	var expense models.Expense
-	if err := database.DB.Db.Model(&expense).Where("id = ?", id).Update("amount", updatedAmount).Error; err != nil {
+	if err := database.Instance.Db.Model(&expense).Where("id = ?", id).Update("amount", updatedAmount).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -35,7 +28,7 @@ func UpdateExpenseAmountInDB(c *fiber.Ctx, id uint, updatedAmount float64) error
 
 func UpdateExpenseDescriptionInDB(c *fiber.Ctx, id uint, updatedDesctiption string) error {
 	var expense models.Expense
-	if err := database.DB.Db.Model(&expense).Where("id = ?", id).Update("description", updatedDesctiption).Error; err != nil {
+	if err := database.Instance.Db.Model(&expense).Where("id = ?", id).Update("description", updatedDesctiption).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -43,7 +36,7 @@ func UpdateExpenseDescriptionInDB(c *fiber.Ctx, id uint, updatedDesctiption stri
 }
 
 func GetExpensesInDB(c *fiber.Ctx, expenses *[]models.Expense) error {
-	if err := database.DB.Db.Find(expenses).Error; err != nil {
+	if err := database.Instance.Db.Find(expenses).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -51,7 +44,7 @@ func GetExpensesInDB(c *fiber.Ctx, expenses *[]models.Expense) error {
 }
 
 func GetExpensesByUserInDB(c *fiber.Ctx, expenses *[]models.Expense, userId uint) error {
-	if err := database.DB.Db.Where("user_id = ?", userId).Find(expenses).Error; err != nil {
+	if err := database.Instance.Db.Where("user_id = ?", userId).Find(expenses).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -61,7 +54,7 @@ func GetExpensesByUserInDB(c *fiber.Ctx, expenses *[]models.Expense, userId uint
 func DeleteExpenseInDB(c *fiber.Ctx, expense *models.Expense) error {
 	helpers.DeleteReceipt(c, expense.ID)
 
-	if err := database.DB.Db.Model(expense).Where("id = ?", expense.ID).Unscoped().Delete(expense).Error; err != nil {
+	if err := database.Instance.Db.Model(expense).Where("id = ?", expense.ID).Unscoped().Delete(expense).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 

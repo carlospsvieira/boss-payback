@@ -15,7 +15,7 @@ type UserByRole struct {
 }
 
 func CreateUserInDB(c *fiber.Ctx, user *models.User) error {
-	if err := database.DB.Db.Create(user).Error; err != nil {
+	if err := database.Instance.Db.Create(user).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, "Failed to create user")
 	}
 
@@ -23,7 +23,7 @@ func CreateUserInDB(c *fiber.Ctx, user *models.User) error {
 }
 
 func UpdateUsernameInDB(c *fiber.Ctx, user *models.User, updatedUsername string) error {
-	if err := database.DB.Db.Model(user).Where("id = ?", user.ID).Update("username", updatedUsername).Error; err != nil {
+	if err := database.Instance.Db.Model(user).Where("id = ?", user.ID).Update("username", updatedUsername).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -31,7 +31,7 @@ func UpdateUsernameInDB(c *fiber.Ctx, user *models.User, updatedUsername string)
 }
 
 func UpdatePasswordInDB(c *fiber.Ctx, user *models.User, hashedPassword []byte) error {
-	if err := database.DB.Db.Model(user).Where("id = ?", user.ID).Update("password", hashedPassword).Error; err != nil {
+	if err := database.Instance.Db.Model(user).Where("id = ?", user.ID).Update("password", hashedPassword).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -39,7 +39,7 @@ func UpdatePasswordInDB(c *fiber.Ctx, user *models.User, hashedPassword []byte) 
 }
 
 func UpdateUserRoleInDB(c *fiber.Ctx, user *models.User, updatedRole uint) error {
-	if err := database.DB.Db.Model(user).Where("id = ?", user.ID).Update("role_id", updatedRole).Error; err != nil {
+	if err := database.Instance.Db.Model(user).Where("id = ?", user.ID).Update("role_id", updatedRole).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -49,7 +49,7 @@ func UpdateUserRoleInDB(c *fiber.Ctx, user *models.User, updatedRole uint) error
 func UsersByRoleInDB(c *fiber.Ctx, roleId uint) ([]models.User, error) {
 	var users []models.User
 
-	if err := database.DB.Db.Where("role_id = ?", roleId).Find(&users).Error; err != nil {
+	if err := database.Instance.Db.Where("role_id = ?", roleId).Find(&users).Error; err != nil {
 		return nil, utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -57,7 +57,7 @@ func UsersByRoleInDB(c *fiber.Ctx, roleId uint) ([]models.User, error) {
 }
 
 func DeleteUserInDB(c *fiber.Ctx, user *models.User) error {
-	if err := database.DB.Db.Unscoped().Delete(user).Error; err != nil {
+	if err := database.Instance.Db.Unscoped().Delete(user).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
