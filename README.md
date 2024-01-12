@@ -4,6 +4,20 @@
 
 Boss Payback is an employee reimbursement and management system crafted using [Fiber](https://github.com/gofiber/fiber/). This platform efficiently oversee user management, role assignments, expense tracking, and workflow orchestration, ensuring seamless operations and optimal productivity.
 
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+2. [Dependencies](#dependencies)
+3. [Setup](#setup)
+    - [Environment Variables](#environment-variables)
+    - [Docker](#docker)
+5. [Development](#development)
+6. [Makefile](#makefile)
+7. [Documentation](#documentation)
+
+---
+
+
 ## Prerequisites
 
 - Go version 1.21.5
@@ -47,7 +61,7 @@ ADMIN_PASSWORD=
 # Uploads Directory Path
 UPLOADS_DIR_PATH=./example_uploads/
 ```
-## Docker
+### Docker
 
 To deploy and run the application using Docker, make use of the provided `docker-compose.yml` configuration:
 
