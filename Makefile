@@ -1,8 +1,8 @@
 
 # Variables
-APP_NAME := Render2
+APP_NAME := Boss Payback
 MAIN_FILE := main.go
-BINARY_NAME := render2
+BINARY_NAME := boss-payback
 BINARY_PATH := ./bin/$(BINARY_NAME)
 BUILD_DIR := ./bin
 SRC_DIR := ./cmd
