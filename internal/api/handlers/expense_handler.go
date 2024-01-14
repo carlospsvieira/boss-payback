@@ -37,22 +37,32 @@ func UpdateExpenseAmount(c *fiber.Ctx) error {
 	var request UpdateExpenseAmountRequest
 	utils.ParseRequestBody(c, &request)
 
+	id, err := utils.ParseUint(c.Params("id"))
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
+
 	if request.Amount == 0 {
 		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, "Amount cannot be missing or zero")
 	}
 
-	db_services.UpdateExpenseAmountInDB(c, request.ID, request.Amount)
+	db_services.UpdateExpenseAmountInDB(c, id, request.Amount)
 
-	return services.UpdateExpenseAmountResponse(c, request.Amount, request.ID)
+	return services.UpdateExpenseAmountResponse(c, request.Amount, id)
 }
 
 func UpdateExpenseDescription(c *fiber.Ctx) error {
 	var request UpdateExpenseDescriptionRequest
 	utils.ParseRequestBody(c, &request)
 
-	db_services.UpdateExpenseDescriptionInDB(c, request.ID, request.Description)
+	id, err := utils.ParseUint(c.Params("id"))
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
 
-	return services.UpdateExpenseDescriptionResponse(c, request.Description, request.ID)
+	db_services.UpdateExpenseDescriptionInDB(c, id, request.Description)
+
+	return services.UpdateExpenseDescriptionResponse(c, request.Description, id)
 }
 
 func GetExpenses(c *fiber.Ctx) error {
@@ -64,21 +74,25 @@ func GetExpenses(c *fiber.Ctx) error {
 }
 
 func GetExpensesByUser(c *fiber.Ctx) error {
-	var request GetExpensesByUserRequest
+	userId, err := utils.ParseUint(c.Params("id"))
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
+
 	var expenses []models.Expense
 
-	utils.ParseRequestBody(c, &request)
+	db_services.GetExpensesByUserInDB(c, &expenses, userId)
 
-	db_services.GetExpensesByUserInDB(c, &expenses, request.UserID)
-
-	return services.GetExpensesByUserResponse(c, &expenses, request.UserID)
+	return services.GetExpensesByUserResponse(c, &expenses, userId)
 }
 
 func DeleteExpense(c *fiber.Ctx) error {
-	var expense models.Expense
-	utils.ParseRequestBody(c, &expense)
+	id, err := utils.ParseUint(c.Params("id"))
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
 
-	db_services.DeleteExpenseInDB(c, &expense)
+	db_services.DeleteExpenseInDB(c, id)
 
-	return services.DeleteExpenseResponse(c, &expense)
+	return services.DeleteExpenseResponse(c, id)
 }

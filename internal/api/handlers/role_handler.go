@@ -30,29 +30,41 @@ func UpdateRoleName(c *fiber.Ctx) error {
 	var request UpdateRoleNameRequest
 	utils.ParseRequestBody(c, &request)
 
+	id, err := utils.ParseUint(c.Params("id"))
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
+
 	if request.Name == "" {
 		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, "Role name cannot be empty")
 	}
 
-	db_services.UpdateRoleNameInDB(c, request.ID, request.Name)
+	db_services.UpdateRoleNameInDB(c, id, request.Name)
 
-	return services.UpdatedRoleNameResponse(c, request.ID, request.Name)
+	return services.UpdatedRoleNameResponse(c, id, request.Name)
 }
 
 func UpdateRoleDescription(c *fiber.Ctx) error {
 	var request UpdateRoleDescriptionRequest
 	utils.ParseRequestBody(c, &request)
 
-	db_services.UpdateRoleDescriptionInDB(c, request.ID, request.Description)
+	id, err := utils.ParseUint(c.Params("id"))
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
 
-	return services.UpdateRoleDescriptionResponse(c, request.ID, request.Description)
+	db_services.UpdateRoleDescriptionInDB(c, id, request.Description)
+
+	return services.UpdateRoleDescriptionResponse(c, id, request.Description)
 }
 
 func DeleteRole(c *fiber.Ctx) error {
-	var role models.Role
-	utils.ParseRequestBody(c, &role)
+	id, err := utils.ParseUint(c.Params("id"))
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
 
-	db_services.DeleteRoleInDB(c, &role)
+	db_services.DeleteRoleInDB(c, id)
 
-	return services.DeleteRoleResponse(c, &role)
+	return services.DeleteRoleResponse(c, id)
 }

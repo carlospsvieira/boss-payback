@@ -50,8 +50,8 @@ func GetExpensesByUserResponse(c *fiber.Ctx, expenses *[]models.Expense, userId 
 	})
 }
 
-func DeleteExpenseResponse(c *fiber.Ctx, expense *models.Expense) error {
+func DeleteExpenseResponse(c *fiber.Ctx, id uint) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": fmt.Sprintf("Expense with id %d was deleted!", expense.ID),
+		"message": fmt.Sprintf("Expense with id %d was deleted!", id),
 	})
 }

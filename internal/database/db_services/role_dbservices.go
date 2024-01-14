@@ -42,8 +42,9 @@ func UpdateRoleDescriptionInDB(c *fiber.Ctx, id uint, updatedRoleDescription str
 	return nil
 }
 
-func DeleteRoleInDB(c *fiber.Ctx, role *models.Role) error {
-	if err := database.Instance.Db.Model(role).Where("id = ?", role.ID).Unscoped().Delete(role).Error; err != nil {
+func DeleteRoleInDB(c *fiber.Ctx, id uint) error {
+	var role models.Role
+	if err := database.Instance.Db.Model(&role).Where("id = ?", id).Unscoped().Delete(&role).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 

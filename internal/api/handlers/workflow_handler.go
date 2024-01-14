@@ -28,24 +28,29 @@ func GetWorkflows(c *fiber.Ctx) error {
 }
 
 func GetWorkflowByApprover(c *fiber.Ctx) error {
-	var request GetWorkflowByApproverRequest
 	var workflows []models.Workflow
-	utils.ParseRequestBody(c, &request)
 
-	db_services.GetWorkflowByApproverInDB(c, &workflows, request.ApproverID)
+	approverId, err := utils.ParseUint(c.Params("id"))
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
 
-	return services.GetWorkflowByApproverResponse(c, &workflows, request.ApproverID)
+	db_services.GetWorkflowByApproverInDB(c, &workflows, approverId)
+
+	return services.GetWorkflowByApproverResponse(c, &workflows, approverId)
 }
 
 func GetWorkflowByExpense(c *fiber.Ctx) error {
-	var request GetWorkflowByExpenseRequest
 	var workflows []models.Workflow
 
-	utils.ParseRequestBody(c, &request)
+	expenseId, err := utils.ParseUint(c.Params("id"))
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
 
-	db_services.GetWorkflowByExpenseInDB(c, &workflows, request.ExpenseID)
+	db_services.GetWorkflowByExpenseInDB(c, &workflows, expenseId)
 
-	return services.GetWorkflowByExpenseResponse(c, &workflows, request.ExpenseID)
+	return services.GetWorkflowByExpenseResponse(c, &workflows, expenseId)
 }
 
 func UpdateWorkflowStatus(c *fiber.Ctx) error {
@@ -53,9 +58,14 @@ func UpdateWorkflowStatus(c *fiber.Ctx) error {
 
 	utils.ParseRequestBody(c, request)
 
-	db_services.UpdateWorkflowStatusInDB(c, request.ID, request.Status)
+	id, err := utils.ParseUint(c.Params("id"))
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
 
-	return services.UpdateWorkflowStatusResponse(c, request.ID, request.Status)
+	db_services.UpdateWorkflowStatusInDB(c, id, request.Status)
+
+	return services.UpdateWorkflowStatusResponse(c, id, request.Status)
 }
 
 func UpdateWorkflowComments(c *fiber.Ctx) error {
@@ -63,17 +73,23 @@ func UpdateWorkflowComments(c *fiber.Ctx) error {
 
 	utils.ParseRequestBody(c, request)
 
-	db_services.UpdateWorkflowCommentsInDB(c, request.ID, request.Comments)
+	id, err := utils.ParseUint(c.Params("id"))
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
 
-	return services.UpdateWorkflowCommentsResponse(c, request.ID, request.Comments)
+	db_services.UpdateWorkflowCommentsInDB(c, id, request.Comments)
+
+	return services.UpdateWorkflowCommentsResponse(c, id, request.Comments)
 }
 
 func DeleteWorkflow(c *fiber.Ctx) error {
-	var workflow models.Workflow
+	id, err := utils.ParseUint(c.Params("id"))
+	if err != nil {
+		return utils.HandleErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
 
-	utils.ParseRequestBody(c, &workflow)
+	db_services.DeleteWorkflowInDB(c, id)
 
-	db_services.DeleteWorkflowInDB(c, &workflow)
-
-	return services.DeleteWorkflowResponse(c, &workflow)
+	return services.DeleteWorkflowResponse(c, id)
 }

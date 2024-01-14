@@ -51,10 +51,12 @@ func GetExpensesByUserInDB(c *fiber.Ctx, expenses *[]models.Expense, userId uint
 	return nil
 }
 
-func DeleteExpenseInDB(c *fiber.Ctx, expense *models.Expense) error {
-	helpers.DeleteReceipt(c, expense.ID)
+func DeleteExpenseInDB(c *fiber.Ctx, id uint) error {
+	helpers.DeleteReceipt(c, id)
 
-	if err := database.Instance.Db.Model(expense).Where("id = ?", expense.ID).Unscoped().Delete(expense).Error; err != nil {
+	var expense models.Expense
+
+	if err := database.Instance.Db.Model(&expense).Where("id = ?", id).Unscoped().Delete(&expense).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 

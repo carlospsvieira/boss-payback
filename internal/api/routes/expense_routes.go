@@ -9,17 +9,17 @@ import (
 
 func ExpenseRoutes(app *fiber.App) {
 	app.Get("/expenses", handlers.GetExpenses)
-	app.Get("/expenses/user", handlers.GetExpensesByUser)
+	app.Get("/expenses/user/:id", handlers.GetExpensesByUser)
 
 	expenseRoutes := app.Group("/expense", middlewares.ValidateGeneralToken)
 	{
 		expenseRoutes.Post("/new", handlers.CreateExpense)
-		expenseRoutes.Put("/amount", handlers.UpdateExpenseAmount)
-		expenseRoutes.Put("/description", handlers.UpdateExpenseDescription)
+		expenseRoutes.Put("/:id/amount", handlers.UpdateExpenseAmount)
+		expenseRoutes.Put("/:id/description", handlers.UpdateExpenseDescription)
 	}
 
 	adminRoutes := app.Group("/admin/expense", middlewares.ValidateAdminToken)
 	{
-		adminRoutes.Delete("/delete", handlers.DeleteExpense)
+		adminRoutes.Delete("/:id/delete", handlers.DeleteExpense)
 	}
 }

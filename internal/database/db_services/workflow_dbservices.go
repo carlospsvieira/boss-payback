@@ -58,8 +58,10 @@ func UpdateWorkflowCommentsInDB(c *fiber.Ctx, id uint, updatedComments string) e
 	return nil
 }
 
-func DeleteWorkflowInDB(c *fiber.Ctx, workflow *models.Workflow) error {
-	if err := database.Instance.Db.Model(workflow).Where("id = ?", workflow.ID).Unscoped().Delete(&workflow).Error; err != nil {
+func DeleteWorkflowInDB(c *fiber.Ctx, id uint) error {
+	var workflow models.Workflow
+
+	if err := database.Instance.Db.Model(&workflow).Where("id = ?", id).Unscoped().Delete(&workflow).Error; err != nil {
 		return utils.HandleErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 

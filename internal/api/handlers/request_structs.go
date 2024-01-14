@@ -26,44 +26,26 @@ type (
 	}
 
 	UpdateRoleNameRequest struct {
-		ID   uint   `json:"id"`
 		Name string `json:"name"`
 	}
 
 	UpdateRoleDescriptionRequest struct {
-		ID          uint   `json:"id"`
 		Description string `json:"description"`
 	}
 
 	UpdateExpenseAmountRequest struct {
-		ID     uint    `json:"id"`
 		Amount float64 `json:"amount"`
 	}
 
 	UpdateExpenseDescriptionRequest struct {
-		ID          uint   `json:"id"`
 		Description string `json:"description"`
 	}
 
-	GetExpensesByUserRequest struct {
-		UserID uint `json:"userId"`
-	}
-
-	GetWorkflowByApproverRequest struct {
-		ApproverID uint `json:"approverId"`
-	}
-
-	GetWorkflowByExpenseRequest struct {
-		ExpenseID uint `json:"expenseId"`
-	}
-
 	UpdateWorkflowCommentsRequest struct {
-		ID       uint   `json:"id"`
 		Comments string `json:"comments"`
 	}
 
 	UpdateWorkflowStatusRequest struct {
-		ID     uint   `json:"id"`
 		Status string `json:"status"`
 	}
 )

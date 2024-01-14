@@ -42,8 +42,8 @@ func UpdateRoleDescriptionResponse(c *fiber.Ctx, id uint, updatedRoleDescription
 	})
 }
 
-func DeleteRoleResponse(c *fiber.Ctx, role *models.Role) error {
+func DeleteRoleResponse(c *fiber.Ctx, id uint) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": fmt.Sprintf("Role with id %d was deleted!", role.ID),
+		"message": fmt.Sprintf("Role with id %d was deleted!", id),
 	})
 }

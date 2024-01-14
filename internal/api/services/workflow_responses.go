@@ -58,8 +58,8 @@ func UpdateWorkflowCommentsResponse(c *fiber.Ctx, id uint, updatedComments strin
 	})
 }
 
-func DeleteWorkflowResponse(c *fiber.Ctx, workflow *models.Workflow) error {
+func DeleteWorkflowResponse(c *fiber.Ctx, id uint) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": fmt.Sprintf("Workflow with id %d was deleted!", workflow.ID),
+		"message": fmt.Sprintf("Workflow with id %d was deleted!", id),
 	})
 }

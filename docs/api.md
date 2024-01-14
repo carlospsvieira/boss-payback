@@ -43,10 +43,10 @@ Provides an overview of the API routes, models, and handlers.
 #### Admin Routes:
 
 - All routes under `/admin/role` require an admin token for authorization.
-  - **POST `/role/new`**: Create a new role.
-  - **PUT `/name`**: Update role name.
-  - **PUT `/description`**: Update role description.
-  - **DELETE `/delete`**: Delete a role.
+  - **POST `/new`**: Create a new role.
+  - **PUT `/:id/name`**: Update role name.
+  - **PUT `/:id/description`**: Update role description.
+  - **DELETE `/:id/delete`**: Delete a role.
 
 ### Expense Routes
 
@@ -57,13 +57,13 @@ Provides an overview of the API routes, models, and handlers.
 
 - All routes under `/expense` require a general token for authorization.
   - **POST `/new`**: Create a new expense.
-  - **PUT `/amount`**: Update expense amount.
-  - **PUT `/description`**: Update expense description.
+  - **PUT `/:id/amount`**: Update expense amount.
+  - **PUT `/:id/description`**: Update expense description.
 
 #### Admin Routes:
 
 - All routes under `/admin/expense` require an admin token for authorization.
-  - **DELETE `/delete`**: Delete an expense.
+  - **DELETE `/:id/delete`**: Delete an expense.
 
 ### Workflow Routes
 
@@ -75,13 +75,13 @@ Provides an overview of the API routes, models, and handlers.
 
 - All routes under `/workflow` and `/admin/workflow` require admin and approver tokens for authorization.
   - **POST `/new`**: Create a new workflow.
-  - **PUT `/status`**: Update workflow status.
-  - **PUT `/comments`**: Update workflow comments.
+  - **PUT `/:id/status`**: Update workflow status.
+  - **PUT `/:id/comments`**: Update workflow comments.
 
 #### Admin Routes:
 
 - All routes under `/admin/workflow` require an admin token for authorization.
-  - **DELETE `/delete`**: Delete a workflow.
+  - **DELETE `/:id/delete`**: Delete a workflow.
 
 ---
 
@@ -151,11 +151,11 @@ type Workflow struct {
 - UpdateUserRoleRequest: Contains role ID for updating user role.
 - GetUsersByRoleRequest: Contains role ID for retrieving users by role.
 - UpdateRoleNameRequest: Includes role ID and new role name.
-- UpdateRoleDescriptionRequest: Includes role ID and updated description.
-- UpdateExpenseAmountRequest: Contains expense ID and updated amount.
-- UpdateExpenseDescriptionRequest: Contains expense ID and updated description.
+- UpdateRoleDescriptionRequest: Includes updated description.
+- UpdateExpenseAmountRequest: Contains updated amount.
+- UpdateExpenseDescriptionRequest: Contains and updated description.
 - GetExpensesByUserRequest: Contains user ID for retrieving expenses.
 - GetWorkflowByApproverRequest: Contains approver ID for retrieving workflows.
 - GetWorkflowByExpenseRequest: Contains expense ID for retrieving workflows.
-- UpdateWorkflowCommentsRequest: Includes workflow ID and updated comments.
-- UpdateWorkflowStatusRequest: Includes workflow ID and updated status.
+- UpdateWorkflowCommentsRequest: Includes updated comments.
+- UpdateWorkflowStatusRequest: Includes updated status.

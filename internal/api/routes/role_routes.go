@@ -19,9 +19,9 @@ func RoleRoutes(app *fiber.App) {
 
 	adminRoutes := app.Group("/admin/role", middlewares.ValidateAdminToken)
 	{
-		adminRoutes.Post("role/new", handlers.CreateRole)
-		adminRoutes.Put("/name", handlers.UpdateRoleName)
-		adminRoutes.Put("/description", handlers.UpdateRoleDescription)
-		adminRoutes.Delete("/delete", handlers.DeleteRole)
+		adminRoutes.Post("/new", handlers.CreateRole)
+		adminRoutes.Put("/:id/name", handlers.UpdateRoleName)
+		adminRoutes.Put("/:id/description", handlers.UpdateRoleDescription)
+		adminRoutes.Delete(":id/delete", handlers.DeleteRole)
 	}
 }
